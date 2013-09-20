@@ -1,0 +1,4 @@
+`$HOME`
+=======
+
+My `$HOME` settings.
