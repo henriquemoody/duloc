@@ -1,0 +1,34 @@
+[alias]
+    diff-stat = diff --stat
+    diff-words = diff --color-words
+    log-diff = log -p --color-words
+    log-stat = log --stat
+[user]
+    name = Henrique Moody
+    email = henriquemoody@gmail.com
+[color]
+    branch = auto
+    diff = auto
+    status = auto
+[color "branch"]
+    current = yellow reverse
+    local = yellow 
+    remote = green
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+[core]
+    excludesfile = /Users/henriquemoody/.gitignore_global
+    editor = vim
+[push]
+    default = current
+[gc]
+    auto = 0
+[rebase]
+	autosquash = true

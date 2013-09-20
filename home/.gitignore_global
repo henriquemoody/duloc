@@ -1,0 +1,6 @@
+*~
+.DS_Store
+.idea/
+/nbproject/
+/vendor/
+composer.lock
