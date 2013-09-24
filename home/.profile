@@ -20,8 +20,11 @@ PATH="$(brew --prefix josegonzalez/php/php55)/bin:$PATH"
 
 git_parse_dirty()
 {
-    test "$(git diff HEAD --name-only  2>/dev/null 2>&1)" \
-        && echo " *"
+    local diff=$(git diff HEAD --name-only 2>/dev/null)
+
+    if [[ ! -z "${diff}" ]]; then
+        echo " *"
+    fi
 }
 
 git_branch_name()
