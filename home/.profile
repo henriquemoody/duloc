@@ -15,8 +15,7 @@ if [ -f /usr/local/etc/bash_completion ]; then
 fi
 
 # User specific aliases and functions
-PATH="${HOME}/.local/bin:${PATH}"
-PATH="$(brew --prefix josegonzalez/php/php55)/bin:$PATH"
+PATH="${HOME}/.local/bin:/usr/local/opt/php55/bin:${PATH}"
 
 git_parse_dirty()
 {
@@ -35,6 +34,7 @@ git_branch_name()
     if [[ ${?} -eq 0 ]]; then
         branch="#$(echo "${branch}" | cut -d '-' -f 1)"
     fi
+
     echo "${branch}" |
         sed -E "s/^(.+)$/(\1$(git_parse_dirty)) /"
 }
