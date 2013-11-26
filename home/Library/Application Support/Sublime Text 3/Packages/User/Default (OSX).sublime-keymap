@@ -1,0 +1,3 @@
+[
+    { "keys": ["super+alt+c"], "command": "sublime_highlight", "args": { "target": "clipboard", "output_type": "rtf" }}
+]
