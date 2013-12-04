@@ -1,6 +1,7 @@
 [alias]
     diff-stat = diff --stat
     diff-words = diff --color-words
+    history = log --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%C(yellow)%d%Creset'
     log-diff = log -p --color-words
     log-stat = log --stat
 [user]
@@ -12,23 +13,21 @@
     status = auto
 [color "branch"]
     current = yellow reverse
-    local = yellow 
+    local = yellow
     remote = green
 [color "diff"]
-    meta = yellow bold
     frag = magenta bold
-    old = red bold
+    meta = yellow bold
     new = green bold
+    old = red bold
 [color "status"]
     added = yellow
     changed = green
     untracked = cyan
 [core]
-    excludesfile = /Users/henriquemoody/.gitignore_global
     editor = vim
+    excludesfile = ~/.gitignore
 [push]
     default = current
-[gc]
-    auto = 0
 [rebase]
-	autosquash = true
+    autosquash = true
