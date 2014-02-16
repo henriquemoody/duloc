@@ -31,3 +31,5 @@
     default = current
 [rebase]
     autosquash = true
+[gc]
+	auto = 0

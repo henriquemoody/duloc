@@ -17,26 +17,36 @@ fi
 # User specific aliases and functions
 PATH="${HOME}/.local/bin:/usr/local/opt/php55/bin:${PATH}"
 
-git_parse_dirty()
-{
-    local diff=$(git diff HEAD --name-only 2>/dev/null)
-
-    if [[ ! -z "${diff}" ]]; then
-        echo " *"
-    fi
-}
-
 git_branch_name()
 {
-    local branch=$(git branch 2>/dev/null | grep -e '^*' | awk '{print $2}')
+    local parsed
+    local shortstat
+    local length
+    local limit
+    local parsed_start
+    local parsed_end
 
-    echo "${branch}" | egrep -q '^[0-9]+'
-    if [[ ${?} -eq 0 ]]; then
-        branch="#$(echo "${branch}" | cut -d '-' -f 1)"
+    git rev-parse 2> /dev/null
+    if [[ ${?} -gt 0 ]]; then
+        return
     fi
 
-    echo "${branch}" |
-        sed -E "s/^(.+)$/(\1$(git_parse_dirty)) /"
+    parsed=$(git branch 2>/dev/null | grep -e '^*' | awk '{print $2}')
+    shortstat=$(git diff --shortstat HEAD 2>/dev/null | sed -E 's/[^0-9=,+-]//g')
+    length=$(echo "${parsed}" | wc -c | sed 's/[^0-9]//g')
+
+    if [[ ${length} -gt 40 ]]; then
+        limit=$((length-17))
+        parsed_start=$(echo "${parsed}" | cut -c 1-20)
+        parsed_end=$(echo "${parsed}" | cut -c ${limit}-${length})
+        parsed="${parsed_start}...${parsed_end}"
+    fi
+
+    if [[ ! -z "${shortstat}" ]]; then
+        parsed="${parsed} * ${shortstat}"
+    fi
+
+    echo "(${parsed}) "
 }
 
 PS1="\u [\w] \$(type git_branch_name &>/dev/null && git_branch_name)$ "
