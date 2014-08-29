@@ -1,4 +1,0 @@
-[submodule "home/Library/Application Support/Sublime Text 3/Packages/Highlight"]
-	path = home/Library/Application Support/Sublime Text 3/Packages/Highlight
-	url = git@github.com:n1k0/SublimeHighlight.git
-	branch = python3

@@ -1,0 +1,8 @@
+*.cache
+*.last-run
+*.system-ca-bundle
+.DS_Store
+/Backup/
+/Cache/
+/Index/
+/Local/

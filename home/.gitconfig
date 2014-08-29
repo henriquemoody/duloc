@@ -32,4 +32,4 @@
 [rebase]
     autosquash = true
 [gc]
-	auto = 0
+    auto = 0

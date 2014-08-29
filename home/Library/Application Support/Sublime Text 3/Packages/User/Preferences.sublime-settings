@@ -19,9 +19,8 @@
 		120
 	],
 	"tab_size": 4,
-	"theme": "Phoenix Light.sublime-theme",
 	"translate_tabs_to_spaces": true,
-	"trim_trailing_white_space_on_save": false,
+	"trim_trailing_white_space_on_save": true,
 	"word_wrap": false,
 	"wrap_width": 80
 }

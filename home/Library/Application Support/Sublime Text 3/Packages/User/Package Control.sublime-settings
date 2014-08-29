@@ -3,12 +3,11 @@
 	[
 		"ApacheConf.tmLanguage",
 		"Behat",
-		"Highlight",
 		"INI",
 		"PHP Getters and Setters",
+		"Puppet",
 		"SideBarEnhancements",
 		"Smarty",
-		"Theme - Phoenix",
 		"Tomorrow Color Schemes"
 	]
 }
