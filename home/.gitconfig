@@ -1,9 +1,12 @@
 [alias]
-    diff-stat = diff --stat
-    diff-words = diff --color-words
-    history = log --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%C(yellow)%d%Creset'
-    log-diff = log -p --color-words
-    log-stat = log --stat
+    d = diff
+    ds = diff --stat
+    dw = diff --color-words
+    l = log
+    lo = log --oneline
+    lp = log --patch
+    lpw = log --patch --color-words
+    ls = log --stat
 [user]
     name = Henrique Moody
     email = henriquemoody@gmail.com
