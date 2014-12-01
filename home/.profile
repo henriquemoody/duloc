@@ -15,7 +15,7 @@ if [ -f /usr/local/etc/bash_completion ]; then
 fi
 
 # User specific aliases and functions
-PATH="${HOME}/.local/bin:/usr/local/opt/php55/bin:${PATH}"
+PATH="${HOME}/.local/bin:/usr/local/opt/php56/bin:${PATH}"
 
 git_branch_name()
 {

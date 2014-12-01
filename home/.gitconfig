@@ -7,6 +7,7 @@
     lp = log --patch
     lpw = log --patch --color-words
     ls = log --stat
+    st = status
 [user]
     name = Henrique Moody
     email = henriquemoody@gmail.com
