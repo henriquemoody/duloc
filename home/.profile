@@ -1,23 +1,17 @@
 # .bashrc
 declare -x CLICOLOR=1
 
-alias grep='grep --color'
-alias egrep='egrep --color'
-alias pgrep='ps aux | grep -v grep | grep'
-
 # Source global definitions
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-if [ -f /usr/local/etc/bash_completion ]; then
-    . /usr/local/etc/bash_completion
-fi
-
 # User specific aliases and functions
-PATH="${HOME}/.local/bin:/usr/local/opt/php56/bin:${PATH}"
+alias grep='grep --color'
+alias egrep='egrep --color'
+alias pgrep='ps aux | grep -v grep | grep'
 
-git_branch_name()
+git_branch_status()
 {
     local parsed
     local shortstat
@@ -49,7 +43,14 @@ git_branch_name()
     echo "(${parsed}) "
 }
 
-PS1="\u [\w] \$(type git_branch_name &>/dev/null && git_branch_name)$ "
+# Bash completion
+if [ -f /usr/local/etc/bash_completion ]; then
+    . /usr/local/etc/bash_completion
+fi
 
-export PS1
-export PATH
+# dynamic PS1 for Git repositories
+export PS1="\u [\w] \$(type git_branch_status &>/dev/null && git_branch_status)$ "
+
+# phpenv
+export PATH="${HOME}/.phpenv/bin:$PATH"
+eval "$(phpenv init -)"
