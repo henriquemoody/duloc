@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Usage: {script} [--debug|-d] DIRECTORY [ PREFIX ]
+#
+#   --debug, -d  Run script in debug mode
+#   --help, -h   Displays this help
+#
+# Report bugs to Henrique Moody <henriquemoody@gmail.com>
+#
+
+declare DEBUG_MODE=0
+
+_help()
+{
+    sed -E 's/^#\s?(.*)/\1/g' "${0}" |
+        sed -nE '/^Usage/,/^Report/p' |
+        sed "s/{script}/$(basename "${0}")/g"
+}
+
+case "${1}" in
+
+    --debug | -d)
+        DEBUG_MODE=1
+        shift
+    ;;
+
+    --help | -h)
+        _help
+        exit
+    ;;
+
+esac
+
+if [[ -z "${1}" ]]; then
+    _help 1>&2
+    exit 1
+fi
+
+DIRECTORY="${1}"
+if [ ! -d "${DIRECTORY}" ]; then
+    echo "$(basename "${0}"): \`${DIRECTORY}\` is not a valid directory." 1>&2
+    exit 2
+else
+    cd "${DIRECTORY}"
+fi
+
+if [ "${2}" ]; then
+    PREFIX="${2}"
+else
+    PREFIX=$(basename "${PWD}")
+fi
+
+while read old_name; do
+
+    extension=$(echo "${old_name}" | sed -E 's/.+\.(.+)/\1/g' | tr '[A-Z]' '[a-z]')
+    basename=$(echo "${old_name}" | sed -E 's/(.+)\..+/\1/g')
+    new_name="${PREFIX}-${basename}.${extension}"
+
+    if [ -f "${new_name}" ]; then
+        echo "File ${new_name} already exists" 1>&2
+    elif [[ ${DEBUG_MODE} -eq 1 ]]; then
+        echo "${old_name} -> ${new_name}"
+    else
+        mv -v "${old_name}" "${new_name}"
+    fi
+
+done < <(ls -1 | sort)

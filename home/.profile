@@ -54,3 +54,6 @@ export PS1="\u [\w] \$(type git_branch_status &>/dev/null && git_branch_status)$
 # phpenv
 export PATH="${HOME}/.phpenv/bin:$PATH"
 eval "$(phpenv init -)"
+
+# Add ~/Library/bin to the path
+export PATH="${HOME}/Library/bin:${PATH}"
