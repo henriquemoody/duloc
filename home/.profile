@@ -57,3 +57,7 @@ eval "$(phpenv init -)"
 
 # Add ~/Library/bin to the path
 export PATH="${HOME}/Library/bin:${PATH}"
+
+# coreutils
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
