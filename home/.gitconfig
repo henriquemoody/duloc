@@ -7,7 +7,7 @@
     lp = log --patch
     lpw = log --patch --color-words
     ls = log --stat
-    rci = !git commit -m \"$(curl -s https://raw.githubusercontent.com/ngerakines/commitment/master/commit_messages.txt|sort -R|tail -n 1)\"
+    rci = !git commit -m \"$(curl -s http://whatthecommit.com/index.txt)\"
     st = status
 [user]
     name = Henrique Moody
