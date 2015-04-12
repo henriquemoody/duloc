@@ -7,8 +7,9 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # User specific aliases and functions
-alias grep='grep --color'
 alias egrep='egrep --color'
+alias grep='grep --color'
+alias ls="ls --color=auto"
 alias pgrep='ps aux | grep -v grep | grep'
 
 git_branch_status()
@@ -59,5 +60,9 @@ eval "$(phpenv init -)"
 export PATH="${HOME}/Library/bin:${PATH}"
 
 # coreutils
-export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
+export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}"
+
+# sed
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
+export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:${MANPATH}"
