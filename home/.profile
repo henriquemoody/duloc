@@ -66,3 +66,6 @@ export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}"
 # sed
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:${MANPATH}"
+
+# Docker variables by boot2docker
+eval "$(boot2docker shellinit 2> /dev/null)"
