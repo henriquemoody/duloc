@@ -8,7 +8,7 @@
     lpw = log --patch --color-words
     last = log --stat --max-count 1
     ls = log --stat
-    rci = !git commit -m \"$(curl -s http://whatthecommit.com/index.txt)\"
+    cme = !git commit --message=\"$(emoji-random)\"
     st = status
 [user]
     name = Henrique Moody
