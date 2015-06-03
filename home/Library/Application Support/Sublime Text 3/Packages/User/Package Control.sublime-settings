@@ -1,15 +1,17 @@
 {
+	"in_process_packages":
+	[
+	],
 	"installed_packages":
 	[
-		"ApacheConf.tmLanguage",
+		"Base16 Color Schemes",
 		"Behat",
-		"INI",
 		"nginx",
+		"Package Control",
 		"PHP Getters and Setters",
 		"Puppet",
 		"SideBarEnhancements",
-		"Smarty",
 		"Theme - Phoenix",
-		"Tomorrow Color Schemes"
+		"WakaTime"
 	]
 }
