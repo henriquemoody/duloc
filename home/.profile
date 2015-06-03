@@ -56,8 +56,8 @@ export PS1="\u [\w] \$(type git_branch_status &>/dev/null && git_branch_status)$
 export PATH="${HOME}/.phpenv/bin:$PATH"
 eval "$(phpenv init -)"
 
-# Add ~/Library/bin to the path
-export PATH="${HOME}/Library/bin:${PATH}"
+# Add ~/bin to the path - Use `chflags hidden bin` to hide it on Finder
+export PATH="${HOME}/bin:${PATH}"
 
 # coreutils
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
@@ -72,3 +72,7 @@ export PATH="vendor/bin:${PATH}"
 
 # Docker variables by boot2docker
 eval "$(boot2docker shellinit 2> /dev/null)"
+
+# Bash history
+export HISTSIZE=5000
+export HISTFILESIZE=5000

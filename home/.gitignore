@@ -1,6 +1,7 @@
 *~
 .DS_Store
-.idea/
-/nbproject/
-/vendor/
+bin/composer
+bin/couscous
+bin/php-cs-fixer
 composer.lock
+vendor/

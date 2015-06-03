@@ -95,7 +95,7 @@ while [[ ! -z "${1}" ]]; do
     esac
 done
 
-if [[ ! -t 0 ]]; then
+if [[ ! -t 0 ]] && [[ -z "${PATTERN}" ]]; then
     PATTERN=$(cat <&0)
 fi
 
