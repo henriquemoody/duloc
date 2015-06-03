@@ -49,6 +49,10 @@ if [ -f /usr/local/etc/bash_completion ]; then
     . /usr/local/etc/bash_completion
 fi
 
+for completion in ${HOME}/etc/bash_completion.d/*; do
+    source "${completion}"
+done
+
 # dynamic PS1 for Git repositories
 export PS1="\u [\w] \$(type git_branch_status &>/dev/null && git_branch_status)$ "
 
