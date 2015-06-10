@@ -74,8 +74,8 @@ export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:${MANPATH}"
 # Add vendor/bin to the path
 export PATH="vendor/bin:${PATH}"
 
-# Docker variables by boot2docker
-eval "$(boot2docker shellinit 2> /dev/null)"
+# Docker variables by docker-machine
+eval "$(docker-machine env 2> /dev/null)"
 
 # Bash history
 export HISTSIZE=5000
