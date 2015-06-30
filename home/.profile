@@ -56,12 +56,8 @@ done
 # dynamic PS1 for Git repositories
 export PS1="\u [\w] \$(type git_branch_status &>/dev/null && git_branch_status)$ "
 
-# phpenv
-export PATH="${HOME}/.phpenv/bin:$PATH"
-eval "$(phpenv init -)"
-
-# Add ~/bin to the path - Use `chflags hidden bin` to hide it on Finder
-export PATH="${HOME}/bin:${PATH}"
+# Add /usr/local/sbin to the path
+export PATH="/usr/local/sbin:${PATH}"
 
 # coreutils
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
@@ -70,6 +66,16 @@ export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}"
 # sed
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:${MANPATH}"
+
+# phpenv
+export PATH="${HOME}/.phpenv/bin:$PATH"
+eval "$(phpenv init -)"
+
+# Add ~/.composer/vendor/bin to the path
+export PATH="${HOME}/.composer/vendor/bin:${PATH}"
+
+# Add ~/bin to the path - Use `chflags hidden bin` to hide it on Finder
+export PATH="${HOME}/bin:${PATH}"
 
 # Add vendor/bin to the path
 export PATH="vendor/bin:${PATH}"
