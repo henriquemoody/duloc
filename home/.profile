@@ -9,6 +9,7 @@ fi
 # User specific aliases and functions
 alias egrep='egrep --color'
 alias grep='grep --color'
+alias jless='python -m json.tool | less'
 alias ls="ls --color=auto"
 alias pgrep='ps aux | grep -v grep | grep'
 
