@@ -57,6 +57,9 @@ done
 # dynamic PS1 for Git repositories
 export PS1="\u [\w] \$(type git_branch_status &>/dev/null && git_branch_status)$ "
 
+# dynamic PS1 for Git repositories
+export PAGER="vimpager"
+
 # Add /usr/local/sbin to the path
 export PATH="/usr/local/sbin:${PATH}"
 
