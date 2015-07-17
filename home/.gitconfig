@@ -19,6 +19,7 @@
     status = auto
     ui = auto
 [core]
+    pager = less
     editor = vim
     excludesfile = ~/.gitignore
 [push]
