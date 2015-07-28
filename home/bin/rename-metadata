@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# Usage: {script} [--debug|-d] METADATA [ DIRECTORY ]
+# Rename all files from a directory based on a given metadata.
+#
+#   --debug, -d  Run script in debug mode
+#   --help, -h   Displays this help
+#
+# Report bugs to Henrique Moody <henriquemoody@gmail.com>.
+#
+
+declare DEBUG_MODE=0
+declare DIRECTORY
+declare SCRIPT=$(basename "${0}")
+declare USAGE=$(sed -E 's/^#\s?(.*)/\1/g' "${0}" | sed -nE '/^Usage/,/^Report/p' | sed "s/{script}/${SCRIPT}/g")
+
+_rename()
+{
+    local filename_old="${1}"
+    local basename_new="${2}"
+    local extension=${3}
+    local index=${4:-0}
+    local filename_new
+
+    if [[ "${extension}" = "jpeg" ]]; then
+        extension=jpg
+    fi
+
+    if [[ ${index} -gt 0 ]]; then
+        filename_new="${basename_new}-${index}.${extension}"
+    else
+        filename_new="${basename_new}.${extension}"
+    fi
+
+    if [[ "${filename_new}" == "${filename_old}" ]]; then
+        echo "‘${filename_old}’ is already the correct name"
+        return 0
+    fi
+
+    if [[ -f "${filename_new}" ]] && [[ ${index} -eq 0 ]]; then
+        _rename "${filename_new}" "${basename_new}" ${extension} $[index+1]
+        _rename "${filename_old}" "${basename_new}" ${extension} $[index+2]
+        return ${?}
+    elif [[ -f "${filename_new}" ]]; then
+        _rename "${filename_old}" "${basename_new}" ${extension} $[index+1]
+        return ${?}
+    fi
+
+    if [[ ${DEBUG_MODE} -eq 1 ]]; then
+        echo "‘${filename_old}’ -> ‘${filename_new}’"
+    else
+        mv -v "${filename_old}" "${filename_new}"
+    fi
+
+    return ${?}
+}
+
+case "${1}" in
+
+    --debug | -d)
+        DEBUG_MODE=1
+        shift
+    ;;
+
+    --help | -h)
+        echo "${USAGE}"
+        exit
+    ;;
+
+esac
+
+METADATA="${1}"
+if [ -z "${METADATA}" ]; then
+    echo "${USAGE}" 1>&2
+    exit 2
+fi
+
+DIRECTORY="${2:-${PWD}}"
+if [ ! -d "${DIRECTORY}" ]; then
+    echo "${SCRIPT}: ‘${DIRECTORY}’ is not a valid directory." 1>&2
+    exit 3
+fi
+
+cd "${DIRECTORY}"
+
+while read filename_old; do
+    if [[ ! -f ${filename_old} ]]; then
+        continue
+    fi
+
+    basename_new=$(exiftool -s -s -s  -d "%Y-%m-%d %H.%M.%S" -"${METADATA}" "${filename_old}" 2> /dev/null)
+    if [[ -z "${basename_new}" ]]; then
+        echo "${SCRIPT}: could not read metadata from ‘${filename_old}’" 1>&2
+        continue
+    fi
+    extension=$(echo "${filename_old}" | sed -E 's/.+\.(.+)/\1/g' | tr '[A-Z]' '[a-z]')
+
+    _rename "${filename_old}" "${basename_new}" "${extension}"
+done < <(ls -1)
