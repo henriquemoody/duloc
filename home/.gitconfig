@@ -28,3 +28,7 @@
     autosquash = true
 [gc]
     auto = 0
+[filter "lfs"]
+    clean = git-lfs clean %f
+    smudge = git-lfs smudge %f
+    required = true
