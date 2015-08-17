@@ -85,7 +85,7 @@ export PATH="${HOME}/bin:${PATH}"
 export PATH="vendor/bin:${PATH}"
 
 # Docker variables by docker-machine
-eval "$(docker-machine env 2> /dev/null)"
+eval "$(docker-machine env local 2> /dev/null)"
 
 # Bash history
 export HISTSIZE=5000
