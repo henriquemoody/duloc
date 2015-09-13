@@ -11,7 +11,8 @@ alias egrep='egrep --color'
 alias grep='grep --color'
 alias jless='python -m json.tool | less'
 alias ls="ls --color=auto"
-alias pgrep='ps aux | grep -v grep | grep'
+alias psgrep='ps aux | grep -v grep | grep'
+alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
 
 git_branch_status()
 {
