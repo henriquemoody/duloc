@@ -8,7 +8,8 @@
     lpw = log --patch --color-words
     last = log --stat --max-count 1
     ls = log --stat
-    cme = !git commit --message=\"$(emoji-random)\"
+    cme = commit --allow-empty-message -m ''
+    cmea = commit --allow-empty-message -m '' --all
     st = status
 [user]
     name = Henrique Moody
