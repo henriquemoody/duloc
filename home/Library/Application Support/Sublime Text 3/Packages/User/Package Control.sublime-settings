@@ -1,14 +1,17 @@
 {
+	"bootstrapped": true,
 	"in_process_packages":
 	[
 	],
 	"installed_packages":
 	[
+		"AdvancedNewFile",
 		"Base16 Color Schemes",
 		"Behat",
 		"Dockerfile Syntax Highlighting",
 		"Emmet",
 		"Generic Config",
+		"Highlight",
 		"INI",
 		"nginx",
 		"Package Control",
@@ -16,6 +19,8 @@
 		"Puppet",
 		"SideBarEnhancements",
 		"Theme - Phoenix",
-		"WakaTime"
+		"Toggl Timer",
+		"Twig",
+		"Xdebug Client"
 	]
 }

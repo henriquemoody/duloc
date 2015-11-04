@@ -1,6 +1,8 @@
 {
 	"extensions":
 	[
-		".gitconfig"
+		".gitconfig",
+		".ini-dist",
+		"ini-dist"
 	]
 }
