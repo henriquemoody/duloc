@@ -1,7 +1,9 @@
+*.sublime-project
+*.sublime-workspace
 .DS_Store
 bin/composer
 bin/couscous
 bin/php-cs-fixer
 composer.lock
-test.php
+test.*
 vendor/
