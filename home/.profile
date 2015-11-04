@@ -72,10 +72,6 @@ export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}"
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:${MANPATH}"
 
-# phpenv
-export PATH="${HOME}/.phpenv/bin:$PATH"
-eval "$(phpenv init -)"
-
 # Add ~/.composer/vendor/bin to the path
 export PATH="${HOME}/.composer/vendor/bin:${PATH}"
 
@@ -84,9 +80,6 @@ export PATH="${HOME}/bin:${PATH}"
 
 # Add vendor/bin to the path
 export PATH="vendor/bin:${PATH}"
-
-# Docker variables by docker-machine
-eval "$(docker-machine env local 2> /dev/null)"
 
 # Bash history
 export HISTSIZE=5000
