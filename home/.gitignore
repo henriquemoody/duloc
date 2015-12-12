@@ -7,3 +7,4 @@ bin/php-cs-fixer
 composer.lock
 test.*
 vendor/
+Icon*
