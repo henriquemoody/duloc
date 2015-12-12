@@ -1,4 +1,8 @@
 {
+	"added_words":
+	[
+		"validator"
+	],
 	"color_scheme": "Packages/Base16 Color Schemes/base16-google.light.tmTheme",
 	"default_line_ending": "unix",
 	"ensure_newline_at_eof_on_save": true,
