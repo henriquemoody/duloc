@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Usage: {script} SCRIPT
+#
+#   --dry-run   Displays the request but doesn't not perform it.
+#
+# Report bugs to Henrique Moody <henriquemoody@gmail.com>
+#
+
+if [[ -z "${1}" ]] || [[ ! -f "${1}" ]]; then
+    sed -E 's/^#\s?(.*)/\1/g' "${0}" |
+        sed -nE "/^Usage/,/^Report/p" |
+        sed "s/{script}/$(basename "${0}")/g" |
+        cat 1>&2
+    exit 1
+fi
+
+declare FILE_NAME="${1}"
+declare FILE_FIRSTLINE=$(head -n1 "${FILE_NAME}")
+declare MESSAGE_HEAEDER=""
+declare MESSAGE_BODY=$(sed -nE '/^$/,//p' "${FILE_NAME}" | sed -E '/^$/d')
+declare MESSAGE_LEGTH=$(echo "${MESSAGE_BODY}" | wc -c)
+declare MESSAGE=""
+
+
+declare VERB=$(echo "${FILE_FIRSTLINE}" | sed -E 's,^([A-Z]+) .+,\1,g')
+declare URI=$(echo "${FILE_FIRSTLINE}" | sed -E 's,^[A-Z]+ .+://[^/]+(/.+),\1,g')
+declare HOST=$(echo "${FILE_FIRSTLINE}" | sed -E 's,^[A-Z]+ .+://([^/]+)/.+,\1,g')
+
+declare HOSTNAME=$(echo "${HOST}" | sed -E 's,([^:]+)(:[0-9]+)?,\1,')
+declare PORT=$(echo "${HOST}" | sed -E 's,([^:]+)(:([0-9]+))?,\3,')
+
+if [[ -z "${PORT}" ]]; then
+    PORT=80
+fi
+
+MESSAGE_LEGTH=$[MESSAGE_LEGTH - 1]
+
+MESSAGE_HEAEDER+="${VERB} ${URI} HTTP/1.1\n"
+MESSAGE_HEAEDER+="Host: ${HOST}\n"
+MESSAGE_HEAEDER+="Connection: close\n"
+MESSAGE_HEAEDER+="User-Agent: restbash\n"
+MESSAGE_HEAEDER+="Content-Length: ${MESSAGE_LEGTH}\n"
+MESSAGE_HEAEDER+="$(sed -nE '/^[A-Z]+/,/^$/p' "${FILE_NAME}" | sed -E '/^$/d' | grep -v "${FILE_FIRSTLINE}")"
+
+MESSAGE="${MESSAGE_HEAEDER}\n${MESSAGE_BODY}"
+
+if [[ "${2}" == '--dry-run' ]]; then
+    echo -e "${MESSAGE}"
+    exit
+fi
+
+echo -e "${MESSAGE}" | nc "${HOSTNAME}" ${PORT}
