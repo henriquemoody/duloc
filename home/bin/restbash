@@ -40,7 +40,7 @@ MESSAGE_HEAEDER+="Host: ${HOST}\n"
 MESSAGE_HEAEDER+="Connection: close\n"
 MESSAGE_HEAEDER+="User-Agent: restbash\n"
 MESSAGE_HEAEDER+="Content-Length: ${MESSAGE_LEGTH}\n"
-MESSAGE_HEAEDER+="$(sed -nE '/^[A-Z]+/,/^$/p' "${FILE_NAME}" | sed -E '/^$/d' | grep -v "${FILE_FIRSTLINE}")"
+MESSAGE_HEAEDER+="$(sed -nE '/^[A-Z]+/,/^$/p' "${FILE_NAME}" | sed -E '/^$/d' | grep -v "${FILE_FIRSTLINE}")\n"
 
 MESSAGE="${MESSAGE_HEAEDER}\n${MESSAGE_BODY}"
 
