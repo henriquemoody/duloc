@@ -14,38 +14,6 @@ alias ls="ls --color=auto"
 alias psgrep='ps aux | grep -v grep | grep'
 alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
 
-git_branch_status()
-{
-    local parsed
-    local shortstat
-    local length
-    local limit
-    local parsed_start
-    local parsed_end
-
-    git rev-parse 2> /dev/null
-    if [[ ${?} -gt 0 ]]; then
-        return
-    fi
-
-    parsed=$(git branch 2>/dev/null | grep -e '^*' | awk '{print $2}')
-    shortstat=$(git diff --shortstat HEAD 2>/dev/null | sed -E 's/[^0-9=,+-]//g')
-    length=$(echo "${parsed}" | wc -c | sed 's/[^0-9]//g')
-
-    if [[ ${length} -gt 40 ]]; then
-        limit=$((length-17))
-        parsed_start=$(echo "${parsed}" | cut -c 1-20)
-        parsed_end=$(echo "${parsed}" | cut -c ${limit}-${length})
-        parsed="${parsed_start}...${parsed_end}"
-    fi
-
-    if [[ ! -z "${shortstat}" ]]; then
-        parsed="${parsed} * ${shortstat}"
-    fi
-
-    echo "(${parsed}) "
-}
-
 # Bash completion
 if [ -f /usr/local/etc/bash_completion ]; then
     . /usr/local/etc/bash_completion
@@ -55,10 +23,10 @@ for completion in ${HOME}/etc/bash_completion.d/*; do
     source "${completion}"
 done
 
-# dynamic PS1 for Git repositories
-export PS1="\u [\w] \$(type git_branch_status &>/dev/null && git_branch_status)$ "
+# Custom PS1
+export PS1="\u [\w] $ "
 
-# dynamic PS1 for Git repositories
+# My pager
 export PAGER="vimpager"
 
 # Add /usr/local/sbin to the path
@@ -85,3 +53,11 @@ export PATH="vendor/bin:${PATH}"
 export HISTSIZE=10000
 export HISTFILESIZE=10000
 export HISTTIMEFORMAT='%F %T '
+
+# Locale settings
+export LC_ALL="en_US.utf-8"
+export LANG="en_US.utf-8"
+export LANGUAGE="en_US"
+export C_CTYPE="en_US.utf-8"
+export LC_NUMERIC="en_US"
+export LC_TIME="en_US.utf-8"
