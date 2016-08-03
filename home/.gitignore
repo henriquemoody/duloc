@@ -1,10 +1,11 @@
 *.sublime-project
 *.sublime-workspace
 .DS_Store
+.idea/
 bin/composer
 bin/couscous
 bin/php-cs-fixer
 composer.lock
+Icon*
 test.*
 vendor/
-Icon*
