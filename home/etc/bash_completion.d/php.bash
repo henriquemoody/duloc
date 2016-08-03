@@ -29,4 +29,4 @@ _php()
     fi
 }
 
-complete -F _php php
+complete -o nospace -F _php php

@@ -37,4 +37,4 @@ _phpunit()
     fi
 }
 
-complete -F _phpunit phpunit
+complete -o nospace -F _phpunit phpunit
