@@ -14,104 +14,104 @@
 
 declare ACTION='search'
 declare DIRECTORY="."
-declare EXTENSION="*"
+declare EXTENSION=".+"
 declare EXCLUDE=""
 
 _grep()
 {
-    egrep -Rn "${PATTERN}" \
-        --color=auto \
-        --include="${EXTENSION}" \
-        "${DIRECTORY}"
+  ag \
+    --case-sensitive \
+    -G "(${EXTENSION})" \
+    "${PATTERN}" \
+    "${DIRECTORY}"
 }
 
 _help()
 {
-    sed -E 's/^#\s?(.*)/\1/g' "${0}" |
-        sed -nE '/^Usage/,/^Report/p' |
-        sed "s/{script}/$(basename "${0}")/g"
+  sed -E 's/^#\s?(.*)/\1/g' "${0}" |
+    sed -nE '/^Usage/,/^Report/p' |
+    sed "s/{script}/$(basename "${0}")/g"
 }
 
 _search()
 {
-    test -z "${EXCLUDE}" &&
-        _grep ||
-        _grep |
-            egrep -v "${EXCLUDE}"
+  test -z "${EXCLUDE}" &&
+    _grep ||
+    _grep | ag --invert-match --case-sensitive "${EXCLUDE}"
 }
 
 _files()
 {
-    _search | cut -d : -f 1 | sort -u
+  _search | cut -d : -f 1 | sort -u
 }
 
 _action()
 {
-    _files |
-        while read filename; do
-            sed -Ei "${ACTION}" "${filename}"
-        done
+  _files |
+    while read filename; do
+      sed -Ei "${ACTION}" "${filename}"
+    done
 }
 
 while [[ ! -z "${1}" ]]; do
 
-    case ${1} in
+  case ${1} in
 
-        -h | --help)
-            _help
-            exit 0
-        ;;
+    -h | --help)
+      _help
+      exit 0
+    ;;
 
-        -a | --action)
-            ACTION="${2}"
-            shift 2
-        ;;
+    -a | --action)
+      ACTION="${2}"
+      shift 2
+    ;;
 
-        -d | --directory)
-            DIRECTORY="${2}"
-            shift 2
-        ;;
+    -d | --directory)
+      DIRECTORY="${2}"
+      shift 2
+    ;;
 
-        -e | --extension)
-            EXTENSION="*.${2}"
-            shift 2
-        ;;
+    -e | --extension)
+      EXTENSION="${2/,/|}"
+      shift 2
+    ;;
 
-        -x | --exclude)
-            EXCLUDE="($(echo "${2}" | sed 's/,/\|/g; s/(/\\(/g'))"
-            shift 2
-        ;;
+    -x | --exclude)
+      EXCLUDE="($(echo "${2}" | sed 's/,/\|/g; s/(/\\(/g'))"
+      shift 2
+    ;;
 
-        -*)
-            echo "Unrecognized option \"${1}\"" 1>&2
-            exit 2
-        ;;
+    -*)
+      echo "Unrecognized option \"${1}\"" 1>&2
+      exit 2
+    ;;
 
-        *)
-            PATTERN="${1}"
-            shift 1
-        ;;
+    *)
+      PATTERN="${1}"
+      shift 1
+    ;;
 
-    esac
+  esac
 done
 
 if [[ ! -t 0 ]] && [[ -z "${PATTERN}" ]]; then
-    PATTERN=$(cat <&0)
+  PATTERN=$(cat <&0)
 fi
 
 if [[ -z "${PATTERN}" ]]; then
-    _help 1>&2
-    exit 1
+  _help 1>&2
+  exit 1
 fi
 
 case "${ACTION}" in
-    search)
-        _search | grep --color=auto "${PATTERN}"
-    ;;
-    files)
-        _files
-    ;;
-    *)
-        _action
-    ;;
+  search)
+    _search | ag "${PATTERN}"
+  ;;
+  files)
+    _files
+  ;;
+  *)
+    _action
+  ;;
 esac

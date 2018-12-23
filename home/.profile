@@ -3,7 +3,7 @@ declare -x CLICOLOR=1
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
-    . /etc/bashrc
+  . /etc/bashrc
 fi
 
 # User specific aliases and functions
@@ -16,11 +16,11 @@ alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
 
 # Bash completion
 if [ -f /usr/local/etc/bash_completion ]; then
-    . /usr/local/etc/bash_completion
+  . /usr/local/etc/bash_completion
 fi
 
 for completion in ${HOME}/etc/bash_completion.d/*; do
-    source "${completion}"
+  source "${completion}"
 done
 
 # Custom PS1
