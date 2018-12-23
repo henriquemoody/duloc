@@ -19,6 +19,7 @@
     diff = auto
     status = auto
     ui = auto
+    blame = auto
 [core]
     pager = less
     editor = vim
@@ -33,3 +34,5 @@
     clean = git-lfs clean %f
     smudge = git-lfs smudge %f
     required = true
+[blame]
+    coloring = highlightRecent
