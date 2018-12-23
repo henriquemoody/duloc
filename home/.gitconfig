@@ -14,6 +14,7 @@
 [user]
     name = Henrique Moody
     email = henriquemoody@gmail.com
+    signingkey = 655813A6
 [color]
     branch = auto
     diff = auto
@@ -34,5 +35,7 @@
     clean = git-lfs clean %f
     smudge = git-lfs smudge %f
     required = true
+[commit]
+    gpgsign = true
 [blame]
     coloring = highlightRecent
