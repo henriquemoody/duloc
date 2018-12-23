@@ -1,11 +1,8 @@
 *.sublime-project
 *.sublime-workspace
 .DS_Store
+.editorconfig
 .idea/
-bin/composer
-bin/couscous
-bin/php-cs-fixer
-composer.lock
+.phpintel
 Icon*
 test.*
-vendor/
