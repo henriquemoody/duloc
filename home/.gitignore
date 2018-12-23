@@ -4,5 +4,5 @@
 .editorconfig
 .idea/
 .phpintel
+git-ignored.*
 Icon*
-test.*
