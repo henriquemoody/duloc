@@ -1,0 +1,10 @@
+{
+    "require": {
+        "phpunit/phpunit": "@stable",
+        "phpmd/phpmd": "@stable",
+        "phploc/phploc": "@stable",
+        "friendsofphp/php-cs-fixer": "@stable",
+        "infection/infection": "^0.11",
+        "phpstan/phpstan": "^0.10"
+    }
+}
