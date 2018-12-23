@@ -40,6 +40,10 @@ export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}"
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:${MANPATH}"
 
+# grep
+export PATH="/usr/local/opt/grep/libexec/gnubin:${PATH}"
+export MANPATH="/usr/local/opt/grep/libexec/gnuman:${MANPATH}"
+
 # Add ~/.composer/vendor/bin to the path
 export PATH="${HOME}/.composer/vendor/bin:${PATH}"
 
