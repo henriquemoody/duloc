@@ -9,6 +9,10 @@
     last = log --stat --max-count 1
     ls = log --stat
     st = status
+    f = fetch
+    fp = fetch --prune
+    ri = rebase --interactive
+    rie = rebase --interactive --keep-empty
 [user]
     name = Henrique Moody
     email = henriquemoody@gmail.com
