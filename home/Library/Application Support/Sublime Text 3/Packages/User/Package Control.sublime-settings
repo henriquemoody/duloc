@@ -1,8 +1,5 @@
 {
 	"bootstrapped": true,
-	"in_process_packages":
-	[
-	],
 	"installed_packages":
 	[
 		"1337 Color Scheme",
@@ -27,7 +24,6 @@
 		"Smarty",
 		"SublimeCodeIntel",
 		"Theme - Phoenix",
-		"Toggl Timer",
 		"Twig",
 		"Xdebug Client"
 	]
