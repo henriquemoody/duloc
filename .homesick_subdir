@@ -2,3 +2,4 @@ bin
 etc
 Library/Application Support
 .composer
+.iterm2
