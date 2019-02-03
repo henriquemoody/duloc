@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Usage: {script} FORMULA TARGET_VERSION
+# Symlink a brew formula to a specific version.
+#
+#   -h, --help          Displays this help
+#
+# Report bugs to Henrique Moody <henriquemoody@gmail.com>
+#
+
+_help()
+{
+  sed -E 's/^#\s?(.*)/\1/g' "${0}" |
+    sed -nE '/^Usage/,/^Report/p' |
+    sed "s/{script}/$(basename "${0}")/g"
+}
+
+if [[ ${#} -eq 0 ]] || [[ ${#} -ne 2 ]]; then
+  _help 1>&2
+  exit 1
+fi
+
+if [[ ${1} == '--help' ]] || [[ ${1} == '-h' ]]; then
+  _help
+  exit
+fi
+
+set -euo pipefail
+
+declare -r IFS=$'\n'
+declare -r FORMULA=${1}
+declare -r BINARY=$(which "${FORMULA}")
+declare -r CURRENT_VERSION=$(realpath "${BINARY}" | sed -E 's,/usr/local/Cellar/,,; s,/.*,,; s,^.+@,,')
+declare -r TARGET_VERSION=${2}
+
+if [[ ${CURRENT_VERSION} = ${TARGET_VERSION} ]]; then
+  echo "${TARGET_VERSION} is already the current version of ${FORMULA}"
+  exit
+fi
+
+if [[ ${CURRENT_VERSION} = ${FORMULA} ]]; then
+  brew unlink ${FORMULA}
+else
+  brew unlink ${FORMULA}@${CURRENT_VERSION}
+fi
+
+brew link --force ${FORMULA}@${TARGET_VERSION}
