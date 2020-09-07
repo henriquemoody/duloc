@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Usage: {script} PATH
+# Construct a commit message for use with rebase --autosquash.
+#
+# The commit message will be the subject line from the specified commit with a
+# prefix of "fixup! " and will contain the changes on the PATH.
+#
+#   --help, -h   Displays this help
+#
+# Report bugs to Henrique Moody <henriquemoody@gmail.com>
+#
+
+set -eo pipefail
+
+declare -a HASH_LIST=()
+declare -i HASH_INDEX=1
+declare -i HASH_CHOSEN=0
+declare -r PATHNAME=${1:-}
+
+help()
+{
+  sed -E 's/^#\s?(.*)/\1/g' "${0}" |
+    sed -nE '/^Usage/,/^Report/p' |
+    sed "s/{script}/$(basename "${0}")/g"
+}
+
+git-log()
+{
+  local -r format=$'%H\t%h\t%s'
+
+  if [[ ! -z "${PATHNAME}" ]]; then
+    git log origin/HEAD...HEAD --format="${format}" "${PATHNAME}" 2> /dev/null ||
+      git log --max-count 10 --format="${format}" "${PATHNAME}"
+    return
+  fi
+
+  git log origin/HEAD...HEAD --format="${format}" 2> /dev/null ||
+    git log --max-count 10 --format="${format}"
+}
+
+git-commit()
+{
+  if [[ ! -z "${PATHNAME}" ]]; then
+    set -x
+    git commit --fixup="${HASH_LIST[HASH_CHOSEN]}" "${PATHNAME}"
+  fi
+
+  set -x
+  git commit --fixup="${HASH_LIST[HASH_CHOSEN]}"
+}
+
+if [[ "${1:-}" = "--help" ]] || [[ "${1:-}" = "-h" ]]; then
+  help
+  exit
+fi
+
+while IFS=$'\t' read -r commit_hash abbreviated_commit_hash subject; do
+  if [[ "${subject}" =~ "fixup!" ]]; then
+    continue
+  fi
+
+  echo "${HASH_INDEX}: ${abbreviated_commit_hash} -> ${subject}"
+
+  HASH_LIST[HASH_INDEX]=${commit_hash}
+  HASH_INDEX=$[HASH_INDEX + 1]
+done < <(git-log)
+
+if [[ ${#HASH_LIST[@]} -eq 1 ]]; then
+  HASH_CHOSEN=1
+fi
+
+echo
+
+while [[ ${HASH_CHOSEN} -eq 0 ]]; do
+  echo -n "> Which commit would you like to fixup? "
+  read user_input
+
+  if [[ ! -v "HASH_LIST[user_input]" ]]; then
+    echo "'${user_input}' is not a valid option." 1>&2
+    continue
+  fi
+
+  HASH_CHOSEN=${user_input}
+done
+
+echo
+
+git-commit
