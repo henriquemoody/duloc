@@ -55,15 +55,32 @@ export PATH="${HOME}/bin:${PATH}"
 # Add vendor/bin to the path
 export PATH="vendor/bin:${PATH}"
 
+# Add ruby to the path
+export PATH="/usr/local/opt/ruby/bin:${PATH}"
+export PATH="/usr/local/lib/ruby/gems/2.7.0/bin:${PATH}"
+
 # Bash history
 export HISTSIZE=10000
 export HISTFILESIZE=10000
 export HISTTIMEFORMAT='%F %T '
 
+# phpenv
+export PHPENV_ROOT="${HOME}/.phpenv"
+
+if [ -d "${PHPENV_ROOT}" ]; then
+  export PATH="${PHPENV_ROOT}/bin:${PATH}"
+  eval "$(phpenv init -)"
+fi
+
+# nvm
+export NVM_DIR="${HOME}/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+
 # Locale settings
-export LC_ALL="en_US.utf-8"
-export LANG="en_US.utf-8"
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
 export LANGUAGE="en_US"
-export C_CTYPE="en_US.utf-8"
+export C_CTYPE="en_US.UTF-8"
 export LC_NUMERIC="en_US"
-export LC_TIME="en_US.utf-8"
+export LC_TIME="en_US.UTF-8"
