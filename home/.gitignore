@@ -4,5 +4,7 @@
 .editorconfig
 .idea/
 .phpintel
+auth.json
 git-ignored.*
 Icon*
+yarn-error.log
