@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+declare SOURCE_LANGUAGE="${1}"
+declare TARGET_LANGUAGE="${2}"
+declare VOICE=$(say --voice="?" | grep --extended-regexp  "\b${TARGET_LANGUAGE}(_[A-Z]{2})?\b" | awk '{print $1}' | tail --lines=1)
+
+shift 2
+
+declare ORIGINAL_MESSAGE="${@}"
+declare TRANSLATED_MESSAGE=$(trans -view -brief -join-sentence -source "${SOURCE_LANGUAGE//_*}" -target "${TARGET_LANGUAGE//_*}" -no-auto <<< "${@}")
+
+say --voice="${VOICE}" "${TRANSLATED_MESSAGE}" &
+
+echo "${TRANSLATED_MESSAGE}"

@@ -13,6 +13,8 @@ alias jless='python -m json.tool | less'
 alias ls="ls --color=auto"
 alias psgrep='ps aux | grep -v grep | grep'
 alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
+alias from-german='translate de en'
+alias to-german='translate en de'
 
 # Bash completion
 if [ -f /usr/local/etc/bash_completion ]; then
