@@ -1,5 +1,8 @@
 {
 	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
 	"installed_packages":
 	[
 		"1337 Color Scheme",
@@ -12,8 +15,10 @@
 		"EditorConfigSnippets",
 		"Emmet",
 		"Generic Config",
+		"GraphQL",
 		"Highlight",
 		"INI",
+		"MarkdownPreview",
 		"nginx",
 		"Package Control",
 		"PHP Companion",
@@ -23,6 +28,8 @@
 		"SideBarEnhancements",
 		"Smarty",
 		"SublimeCodeIntel",
+		"SublimeLinter-pep8",
+		"SublimeLinter-pycodestyle",
 		"Theme - Phoenix",
 		"Twig",
 		"Xdebug Client"
