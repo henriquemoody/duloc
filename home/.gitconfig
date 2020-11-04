@@ -41,3 +41,5 @@
     gpgsign = true
 [blame]
     coloring = highlightRecent
+[includeIf "gitdir:~/Projects/Werkspot/"]
+    path = ~/Projects/Werkspot/.gitconfig
