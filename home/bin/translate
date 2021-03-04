@@ -1,14 +1,120 @@
 #!/usr/bin/env bash
+# Usage: {script} OPTIONS... TEXT...
+# Translate a word or sentence.
+#
+# Options:
+#
+#   -h, --help.                   Displays this help
+#   -f LANGUAGE, --from=LANGUAGE  Defines the language of the text.
+#   -f LANGUAGE, --to=LANGUAGE    Defines the language you want the text to be
+#                                 translated.
+#   -s SOURCE, --say=SOURCE       Defines the language of the voice that speaks the message.
+#                                 Allowed values: "text", "translation", and "nothing".
+#                                 Default: "nothing".
+#
+# Examples:
+#
+#  $ translate --from=de --to=en Ich lerne Deutsch
+#  I'm learning German
+#
+#  $ translate --from=pt --to=en --say=translation Eu falo português
+#  I speak Portuguese
+#
+#  $ translate --from=nl --to=pt --say=text Ik kan een beetje Nederlands praten.
+#  Eu posso falar um pouco holandês.
+#
+# Report bugs to Henrique Moody <henriquemoody@gmail.com>
+#
 
-declare SOURCE_LANGUAGE="${1}"
-declare TARGET_LANGUAGE="${2}"
-declare VOICE=$(say --voice="?" | grep --extended-regexp  "\b${TARGET_LANGUAGE}(_[A-Z]{2})?\b" | awk '{print $1}' | tail --lines=1)
+set -euo pipefail
 
-shift 2
+declare -r IFS=$'\n'
+declare -r SCRIPT=$(basename "${0}")
+declare -r HISTORY_FILENAME="${HOME}/.${SCRIPT}_history"
 
-declare ORIGINAL_MESSAGE="${@}"
-declare TRANSLATED_MESSAGE=$(trans -view -brief -join-sentence -source "${SOURCE_LANGUAGE//_*}" -target "${TARGET_LANGUAGE//_*}" -no-auto <<< "${@}")
+declare LANGUAGE_FROM=""
+declare LANGUAGE_TO=""
+declare SAY="nothing"
+declare TEXT=""
 
-say --voice="${VOICE}" "${TRANSLATED_MESSAGE}" &
+usage()
+{
+  sed -E 's/^#\s?(.*)/\1/g' "${0}" |
+    sed -nE '/^Usage/,/^Report/p' |
+    sed "s/{script}/${SCRIPT}/g"
+}
 
-echo "${TRANSLATED_MESSAGE}"
+say-in-language()
+{
+  local language="${1}"
+  local text="${2}"
+  local voice=$(say --voice="?" | grep --extended-regexp  "\b${language}(_[A-Z]{2})?\b" | awk '{print $1}' | tail --lines=1)
+
+  say --voice="${voice}" "${text}" &
+}
+
+while [[ ${#} -gt 0 ]]; do
+
+  case "${1}" in
+    --help | -h)
+      usage
+      exit
+      ;;
+    --from=*)
+      LANGUAGE_FROM="${1#*=}"
+      ;;
+    -f)
+      LANGUAGE_FROM="${2}"
+      shift
+      ;;
+    --to=*)
+      LANGUAGE_TO="${1#*=}"
+      ;;
+    -t)
+      LANGUAGE_TO="${2}"
+      shift
+      ;;
+    --say=*)
+      SAY="${1#*=}"
+      ;;
+    -s)
+      SAY="${2}"
+      shift;;
+    -*)
+      echo "Unknown option '${1}'. See '--help' for more information."  1>&2
+      exit
+      ;;
+    *)
+      TEXT="${TEXT}${1} "
+      ;;
+  esac
+
+  shift
+
+done
+
+TEXT=$(echo "${TEXT}" | xargs)
+
+if [[ -z "${LANGUAGE_FROM}" ]] || [[ -z "${LANGUAGE_TO}" ]] || [[ -z "${TEXT}" ]]; then
+  usage 1>&2
+  exit 1
+fi
+
+declare -r TRANSLATION=$(trans -no-auto -view -brief -join-sentence -source "${LANGUAGE_FROM//_*}" -target "${LANGUAGE_TO//_*}" -no-auto <<< "${TEXT}")
+
+if [[ "${SAY}" = "text" ]]; then
+  say-in-language "${LANGUAGE_FROM,,}" "${TEXT}"
+
+elif [[ "${SAY}" = "translation" ]]; then
+  say-in-language "${LANGUAGE_TO,,}" "${TRANSLATION}"
+
+elif [[ "${SAY}" != "nothing" ]]; then
+  echo "Unknown value '${SAY}' for option --say, -s. See '--help' for more information."  1>&2
+  exit 2
+fi
+
+echo "${TRANSLATION}"
+
+touch "${HISTORY_FILENAME}"
+grep --quiet "^${TEXT}:" "${HISTORY_FILENAME}" ||
+  echo "${TEXT}:${TRANSLATION}" >> "${HISTORY_FILENAME}"
