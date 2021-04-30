@@ -6,5 +6,5 @@
 .phpintel
 auth.json
 git-ignored.*
-Icon*
-yarn-error.log
+*yarn-error.log
+Icon
