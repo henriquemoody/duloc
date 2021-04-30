@@ -11,6 +11,7 @@ alias egrep='egrep --color'
 alias grep='grep --color'
 alias jless='python -m json.tool | less'
 alias ls="ls --color=auto"
+alias k="kubectl"
 alias psgrep='ps aux | grep -v grep | grep'
 alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
 alias from-german='translate --from=de --to=en --say=text'
@@ -84,3 +85,8 @@ export LANGUAGE="en_US"
 export C_CTYPE="en_US.UTF-8"
 export LC_NUMERIC="en_US"
 export LC_TIME="en_US.UTF-8"
+
+
+# Ingress
+#export INGRESS_HTTP_PORT=80
+#export INGRESS_SSL_PORT=443
