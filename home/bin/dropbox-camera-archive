@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+export IFS=$'\n'
+
+while read filename; do
+  declare directory=$(sed -E 's,[0-9]{4}-([0-9]{2})-([0-9]{2}).+,\1/\2,' <<< "${filename}")
+
+  mkdir --parents --verbose "${directory}"
+  mv --verbose "${filename}" "${directory}"
+done < <(find . -type f -depth 1 | sed 's,./,,' | grep --extended-regexp --invert-match '(Icon|DS_Store)')

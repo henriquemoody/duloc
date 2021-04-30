@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+declare -r IFS=$'\n'
+declare -r PID="${$}"
+declare -r MAX_ITERATIONS="${1}"
+declare -A IDS=()
+declare -A OUTPUTS=()
+declare -A QUANTITIES=()
+declare GROUP_INDEX=0
+shift
+
+for iteraton in $(seq 1 ${MAX_ITERATIONS}); do
+  declare output=$(${@})
+  declare id=$(echo "${output}" | md5)
+
+  if [[ $[IDS[${id}]] -eq 0 ]]; then
+    IDS[${id}]=$[GROUP_INDEX + 1]
+    OUTPUTS[${id}]=${output}
+    GROUP_INDEX=$[GROUP_INDEX + 1]
+  fi
+
+  QUANTITIES[${id}]=$[QUANTITIES[${id}] + 1]
+done
+
+echo "Summary"
+echo
+
+for id in ${!IDS[*]}; do
+  echo "- Group ${IDS[${id}]}: $[QUANTITIES[${id}] * 100 / MAX_ITERATIONS]% (${QUANTITIES[${id}]})"
+done
+echo
+
+echo "Output"
+echo
+
+for id in ${!IDS[*]}; do
+  echo "- Group ${IDS[${id}]}:"
+  echo
+  echo "${OUTPUTS[${id}]}" | sed -E 's,^,  ,g'
+  echo
+done
