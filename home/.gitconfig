@@ -41,5 +41,5 @@
     gpgsign = true
 [blame]
     coloring = highlightRecent
-[includeIf "gitdir:~/Projects/Werkspot/"]
-    path = ~/Projects/Werkspot/.gitconfig
+[includeIf "gitdir:~/Projects/instapro/"]
+    path = ~/Projects/instapro/.gitconfig
