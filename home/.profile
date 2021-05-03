@@ -63,7 +63,7 @@ export PATH="vendor/bin:${PATH}"
 
 # Add ruby to the path
 export PATH="/usr/local/opt/ruby/bin:${PATH}"
-export PATH="/usr/local/lib/ruby/gems/2.7.0/bin:${PATH}"
+export PATH="/usr/local/lib/ruby/gems/3.0.0/bin:${PATH}"
 
 # Bash history
 export HISTSIZE=10000
