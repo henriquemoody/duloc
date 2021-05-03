@@ -34,6 +34,7 @@ export PAGER="vimpager"
 
 # Add /usr/local/sbin to the path
 export PATH="/usr/local/sbin:${PATH}"
+export MANPATH="/usr/local/share/man:${MANPATH}"
 
 # coreutils
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
