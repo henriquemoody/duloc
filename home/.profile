@@ -58,9 +58,6 @@ export PATH="${HOME}/.composer/vendor/bin:${PATH}"
 # Add ~/bin to the path - Use `chflags hidden bin` to hide it on Finder
 export PATH="${HOME}/bin:${PATH}"
 
-# Add vendor/bin to the path
-export PATH="vendor/bin:${PATH}"
-
 # Add ruby to the path
 export PATH="/usr/local/opt/ruby/bin:${PATH}"
 export PATH="/usr/local/lib/ruby/gems/3.0.0/bin:${PATH}"
