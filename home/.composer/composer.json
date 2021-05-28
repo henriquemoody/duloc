@@ -1,10 +1,11 @@
 {
     "require": {
-        "phpunit/phpunit": "@stable",
-        "phpmd/phpmd": "@stable",
-        "phploc/phploc": "@stable",
-        "friendsofphp/php-cs-fixer": "@stable",
-        "infection/infection": "^0.11",
-        "phpstan/phpstan": "^0.10"
+        "phpunit/phpunit": "^8.5.15",
+        "phpmd/phpmd": "^2.10.1",
+        "phploc/phploc": "^5.0.0",
+        "friendsofphp/php-cs-fixer": "^v2.19.0",
+        "infection/infection": "^0.11.5",
+        "phpstan/phpstan": "^0.10.9",
+        "malukenho/mcbumpface": "^1.1.5"
     }
 }
