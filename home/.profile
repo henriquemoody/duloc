@@ -86,8 +86,3 @@ export LANGUAGE="en_US"
 export C_CTYPE="en_US.UTF-8"
 export LC_NUMERIC="en_US"
 export LC_TIME="en_US.UTF-8"
-
-
-# Ingress
-#export INGRESS_HTTP_PORT=80
-#export INGRESS_SSL_PORT=443
