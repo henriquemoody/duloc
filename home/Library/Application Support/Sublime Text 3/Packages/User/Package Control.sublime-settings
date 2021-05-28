@@ -18,7 +18,6 @@
 		"GraphQL",
 		"Highlight",
 		"INI",
-		"LESS",
 		"MarkdownPreview",
 		"nginx",
 		"Package Control",
@@ -34,6 +33,6 @@
 		"SublimeLinter-pycodestyle",
 		"Theme - Phoenix",
 		"Twig",
-		"Xdebug Client"
-	]
+		"Xdebug Client",
+	],
 }
