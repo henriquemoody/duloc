@@ -6,8 +6,6 @@
 	"installed_packages":
 	[
 		"1337 Color Scheme",
-		"AdvancedNewFile",
-		"auto-save",
 		"Base16 Color Schemes",
 		"Behat",
 		"Dockerfile Syntax Highlighting",
@@ -31,7 +29,6 @@
 		"SublimeCodeIntel",
 		"SublimeLinter-pep8",
 		"SublimeLinter-pycodestyle",
-		"Theme - Phoenix",
 		"Twig",
 		"Xdebug Client",
 	],

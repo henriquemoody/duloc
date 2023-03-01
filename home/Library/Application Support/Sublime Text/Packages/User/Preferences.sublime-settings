@@ -34,7 +34,7 @@
 		"*.ttf",
 		"*.zip"
 	],
-	"color_scheme": "Packages/Base16 Color Schemes/Themes/base16-google-light.tmTheme",
+	"color_scheme": "Packages/Base16 Color Schemes/Themes/base16-tomorrow.tmTheme",
 	"default_line_ending": "unix",
 	"ensure_newline_at_eof_on_save": true,
 	"font_face": "Monaco",
@@ -55,7 +55,7 @@
 		120
 	],
 	"tab_size": 4,
-	"theme": "Phoenix Light.sublime-theme",
+	"theme": "Adaptive.sublime-theme",
 	"translate_tabs_to_spaces": true,
 	"trim_trailing_white_space_on_save": true,
 	"word_wrap": false,
