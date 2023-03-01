@@ -3,6 +3,7 @@
 .DS_Store
 .editorconfig
 .idea/
+.phpstorm_helpers/
 .phpintel
 auth.json
 git-ignored.*
