@@ -14,8 +14,8 @@ alias ls="ls --color=auto"
 alias k="kubectl"
 alias psgrep='ps aux | grep -v grep | grep'
 alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
-alias from-german='translate --from=de --to=en --say=text'
-alias to-german='translate --from=en --to=de --say=translation'
+alias from-dutch='translate --from=nl --to=en --say=text'
+alias to-dutch='translate --from=en --to=nl --say=translation'
 
 # Bash completion
 if [ -f /usr/local/etc/bash_completion ]; then
