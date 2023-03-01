@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+CURRENT="${1}"
+NEW=${CURRENT/.pdf/-bianco-e-nero.pdf}
+
+gs\
+ -sOutputFile="${NEW}"\
+ -sDEVICE=pdfwrite\
+ -sColorConversionStrategy=Gray\
+ -dMonoImageResolution=72\
+ -dProcessColorModel=/DeviceGray\
+ -dCompatibilityLevel=1.4\
+ -dNOPAUSE\
+ -dBATCH\
+ "${CURRENT}"

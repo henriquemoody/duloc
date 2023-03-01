@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Usage: compresspdf [input file] [output file] [screen*|ebook|printer|prepress]
+
+declare -r INPUT="${1}"
+declare -r OUTPUT="${2}"
+declare -r PDF_SETTINGS="${3:-"screen"}"
+
+set -x
+
+gs\
+  -sDEVICE=pdfwrite\
+  -sColorConversionStrategy=Gray \
+  -dProcessColorModel=/DeviceGray \
+  -dNOPAUSE\
+  -dQUIET\
+  -dBATCH\
+  -dPDFSETTINGS=/${PDF_SETTINGS}\
+  -dCompatibilityLevel=1.4\
+  -sOutputFile="${OUTPUT}"\
+  "${INPUT}"

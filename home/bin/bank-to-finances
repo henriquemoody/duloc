@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+IFS=$'\n'
+BANK_FILENAME="${1}"
+PAYPAL_FILENAME="${2:-$(mktemp)}"
+BASENAME="$(basename "${BANK_FILENAME}" ".xls")"
+TSV_FILENAME=$(mktemp)
+TSV_FILENAME_EXPENSES="${BASENAME}-Expenses.tsv"
+TSV_FILENAME_INCOME="${BASENAME}-Income.tsv"
+TSV_FILENAME_ASSETS="${BASENAME}-Assets.tsv"
+
+sanitize-description()
+{
+  sed --regexp-extended "s/[A-Z]{3}, Betaalpas +//" |
+      sed --regexp-extended "s/,PAS[0-9]+ .+$//" |
+      sed --regexp-extended "s,ABN AMRO Bank N.V.               Basic Package.+,ABN AMRO Basic Package," |
+      sed --regexp-extended "s/^.+Naam: (.+) Omschrijving:.+/\1/" |
+      sed --regexp-extended "s,^.+/NAME/Stripe Technology Europe Ltd/REMI/([^/]+)/.+,\1," |
+      sed --regexp-extended "s,^.+/NAME/([^/]+)/.+,\1," |
+      sed --regexp-extended "s,^[A-Z]{3} +NR:[A-Z0-9]+ +[0-9]{2}\.[0-9]{2}\.[0-9]{2}\/[0-9]{2}.[0-9]{2} +(.+)$,\1," |
+      sed --regexp-extended "s,^SumUp ,," |
+      sed --regexp-extended "s,^Albert Heijn [0-9]+,Albert Heijn,I" |
+      sed --regexp-extended "s,^ALBERT HEIJN [0-9]+,Albert Heijn,I" |
+      sed --regexp-extended "s,^Kruidvat [0-9]+,Kruidvat,I" |
+      sed --regexp-extended "s,^Kiosk [0-9]+,Kiosk,I" |
+      sed --regexp-extended "s,^Etos [0-9]+,Etos,I" |
+      sed --regexp-extended "s,^AH .+$,Albert Heijn,I" |
+      sed --regexp-extended "s,^PayPal .+,PayPal,I" |
+      sed --regexp-extended "s,^Zilveren Kruis .+,Zilveren Kruis," |
+      sed --regexp-extended "s,^Vitatheek.*,Vitatheek," |
+      sed --regexp-extended "s,^DIRK VDBROEK.*,Dirk van den Broek," |
+      sed --regexp-extended "s,^RELAY .+,Relay," |
+      sed --regexp-extended "s,TLS BV inz. OV-Chipkaart*+,OV-Chipkaart," |
+      sed --regexp-extended "s,^Gall \& Gall [0-9]+,Gall \& Gall," |
+      sed --regexp-extended "s, (by|via) .+$,," |
+      sed --regexp-extended "s,^Thuisbezorgd.nl,Food Delivery," |
+      sed --regexp-extended "s,Takeaway.com Payments,Food Delivery," |
+      sed --regexp-extended "s,Uber Payments,Uber," |
+      sed --regexp-extended "s,Uber Payments,Uber," |
+      sed --regexp-extended "s,Apple Services,Apple," |
+      sed --regexp-extended "s,Netflix.com,Netflix," |
+      sed --regexp-extended "s,BOL\.?COM,Bol,I" |
+      sed --regexp-extended "s,Classpass(.Com| Inc.),ClassPass,I" |
+      sed --regexp-extended "s,Ziggo.+,Ziggo,I" |
+      sed --regexp-extended "s,Vattenfall.+,Vattenfall,I" |
+      sed --regexp-extended "s,ov-chipkaart.+,OV-Chipkaart,I" |
+      sed --regexp-extended "s, +$,," |
+      sed --regexp-extended "s, (B|N)\.?V.?$,,I" |
+      sed --regexp-extended "s,ABN AMRO SCHADEV NV,ABN AMRO Insurance,I" |
+      sed --regexp-extended "s,Abn Amro Schadev,ABN AMRO Insurance,I" |
+      sed --regexp-extended "s, +Machtiging:.+$,," |
+      sed --regexp-extended "s,.+Naam: (.+),\1,"
+}
+
+filter-description() {
+  local description="${1}"
+  local amount="${2}"
+  local year="$(cut --delimiter "/" --field 1 <<< "${3}")"
+  local month="$(cut --delimiter "/" --field 2 <<< "${3}" | sed --regexp-extended "s,\b0,,g")"
+  local day="$(cut --delimiter "/" --field 3 <<< "${3}" | sed --regexp-extended "s,\b0,,g")"
+  local trials="${4:-1}"
+
+  local filtered_description=$(tr -d '"' <<< "${description}" | sanitize-description)
+
+  if grep --quiet --extended-regexp "^[A-Z0-9&'. -]+$" <<< "${filtered_description}"; then
+    tr '[A-Z]' '[a-z]' <<< "${filtered_description}" |
+      sed --regexp-extended "s/\b(\w)/\u\1/g"
+    return
+  fi
+
+  if [[ "${filtered_description}" != "PayPal" ]] || [[ "${trials}" -gt 5 ]]; then
+    echo "${filtered_description}"
+    return
+  fi
+
+
+  if grep --word-regexp "\-${amount}" "${PAYPAL_FILENAME}" | grep --quiet "${month}/${day}/${year}"; then
+    paypal_description=$(
+      grep --word-regexp "\-${amount}" "${PAYPAL_FILENAME}" |
+       grep "${month}/${day}/${year}" |
+       head --lines 1 |
+       cut --delimiter '"' --field 24 |
+       sanitize-description
+    )
+
+    if [[ "${paypal_description}" = "Apple" ]] && [[ "${amount}" = "0.99" ]]; then
+      echo "iCloud"
+      return
+    fi
+    echo ${paypal_description}
+    return
+  fi
+
+  filter-description "${filtered_description}" "${amount}" "${year}/${month}/$[day - 1]" $[trials + 1]
+}
+
+is-income() {
+  local amount="${1}"
+  local description="${2}"
+
+  [[ "${amount}" =~ "-" ]] && [[ ! "${description}" =~ "Hm Carmo" ]]
+}
+
+is-asset() {
+  local amount="${1}"
+  local description="${2}"
+
+  [[ "${description}" =~ "Personal Savings Account" ]] || [[ "${description_filtered}" =~ "Hm Carmo" ]]
+}
+
+print-type() {
+  local description="${1}"
+
+  if [[ "${description}" =~ "Werkspot" ]]; then
+    echo "Salary"
+    return
+
+  elif [[ "${description}" =~ "Albert Heijn" ]] ||
+    [[ "${description}" =~ "Dirk van den Broek" ]] ||
+    [[ "${description}" =~ "Eurospin" ]] ||
+    [[ "${description}" =~ "Supermercato" ]] ||
+    [[ "${description}" =~ "Ekoplaza" ]] ||
+    [[ "${description}" =~ "Lidl" ]] ||
+    [[ "${description}" =~ "Nuovi Sapori" ]] ||
+    [[ "${description}" =~ "Etos" ]] ||
+    [[ "${description}" =~ "Aldi" ]] ||
+    [[ "${description}" =~ "Flink" ]] ||
+    [[ "${description}" =~ "Karadeniz Versshop" ]] ||
+    [[ "${description}" =~ "Kruidvat" ]]; then
+    echo "Basic"
+    return
+
+  elif [[ "${description}" =~ "Zilveren Kruis" ]] ||
+    [[ "${description}" =~ "ABN AMRO Insurance" ]]; then
+    echo "Insurance"
+    return
+
+
+  elif [[ "${description}" =~ "Vitatheek" ]] ||
+    [[ "${description}" =~ "Sakura Care" ]] ||
+    [[ "${description}" =~ "Dorien de Vries" ]] ||
+    [[ "${description}" =~ "Infomedics" ]]; then
+    echo "Healthcare"
+    return
+
+  elif [[ "${description}" =~ "Vattenfall" ]] ||
+    [[ "${description}" =~ "Waternet" ]] ||
+    [[ "${description}" =~ "Waterschap" ]] ||
+    [[ "${description}" =~ "HB Housing" ]] ||
+    [[ "${description}" =~ "K.A. van den Berg" ]] ||
+    [[ "${description}" =~ "Ziggo" ]]; then
+    echo "Housing"
+    return
+
+  elif [[ "${description}" =~ "Ristorante" ]] ||
+    [[ "${description}" =~ "Restaurant" ]] ||
+    [[ "${description}" =~ "restaurant" ]] ||
+    [[ "${description}" =~ "Gelateria" ]] ||
+    [[ "${description}" =~ "Osteria" ]] ||
+    [[ "${description}" =~ "Gall & Gall" ]] ||
+    [[ "${description}" =~ "Osteria" ]] ||
+    [[ "${description}" =~ "Ramen" ]] ||
+    [[ "${description}" =~ "Bar " ]] ||
+    [[ "${description}" =~ "Food Delivery" ]]; then
+    echo "Luxury"
+    return
+
+  elif [[ "${description}" =~ "Munganga" ]]; then
+    echo "Entertainment"
+    return
+
+  elif [[ "${description}" =~ "Bol" ]]; then
+    echo "Stuff"
+    return
+
+  elif [[ "${description}" =~ "OV-Chipkaart" ]]; then
+    echo "Transportation"
+    return
+
+  elif [[ "${description}" =~ "Airbnb" ]]; then
+    echo "Stay"
+    return
+
+  elif [[ "${description}" =~ "Tele2" ]] ||
+    [[ "${description}" =~ "ABN AMRO Basic Package" ]] ||
+    [[ "${description}" =~ "Netflix" ]] ||
+    [[ "${description}" =~ "iCloud" ]] ||
+    [[ "${description}" =~ "Spotify" ]]; then
+    echo "Service"
+    return
+  fi
+}
+
+>"${TSV_FILENAME_INCOME}"
+>"${TSV_FILENAME_ASSETS}"
+>"${TSV_FILENAME_EXPENSES}"
+
+ssconvert --export-options=$'separator=\'\t\' format=raw' --export-type=Gnumeric_stf:stf_assistant "${BANK_FILENAME}" "${TSV_FILENAME}"
+
+while IFS=$'\t' read -r accountNumber _  date _ _ _  amount description; do
+  grep --quiet --extended-regexp "^[0-9]+$" <<< "${accountNumber}" || continue
+
+  amount_filtered=$(printf "%4.2f\n" "$(bc <<< "-1 * ${amount}")")
+  date_filtered=$(sed --regexp-extended "s,^([0-9]{4})([0-9]{2})([0-9]{2})$,\1/\2/\3," <<< "${date}")
+  description_filtered=$(filter-description "${description}" "${amount_filtered}" "${date_filtered}")
+
+  if is-income "${amount_filtered}" "${description_filtered}"; then
+    echo -e "$(print-type "${description_filtered}")\t${date_filtered}\t${amount}\t${description_filtered}" >> "${TSV_FILENAME_INCOME}"
+    continue
+
+  elif is-asset "${amount_filtered}" "${description_filtered}"; then
+    echo -e "Savings\t${date_filtered}\t${amount_filtered}"  >> "${TSV_FILENAME_ASSETS}"
+    continue
+  fi
+
+  echo -e "$(print-type "${description_filtered}")\t${date_filtered}\t${amount_filtered}\t${description_filtered}" >> "${TSV_FILENAME_EXPENSES}"
+
+done < "${TSV_FILENAME}"
+
+wc -l "${BASENAME}-"*
