@@ -52,6 +52,9 @@ export MANPATH="/usr/local/opt/grep/libexec/gnuman:${MANPATH}"
 export PATH="/usr/local/opt/gnu-getopt/bin:${PATH}"
 export MANPATH="/usr/local/opt/gnu-getopt/share/man:${MANPATH}"
 
+# mysql
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+
 # Add ~/.composer/vendor/bin to the path
 export PATH="${HOME}/.composer/vendor/bin:${PATH}"
 
