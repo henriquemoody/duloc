@@ -73,6 +73,10 @@ export HISTTIMEFORMAT='%F %T '
 # phpenv
 export PHPENV_ROOT="${HOME}/.phpenv"
 
+# jdk
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_361.jdk/Contents/Home/"
+export PATH="${JAVA_HOME}/bin:${PATH}"
+
 if [ -d "${PHPENV_ROOT}" ]; then
   export PATH="${PHPENV_ROOT}/bin:${PATH}"
   eval "$(phpenv init -)"
