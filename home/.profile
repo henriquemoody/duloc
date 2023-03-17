@@ -18,8 +18,8 @@ alias from-dutch='translate --from=nl --to=en --say=text'
 alias to-dutch='translate --from=en --to=nl --say=translation'
 
 # Bash completion
-if [ -f /usr/local/etc/bash_completion ]; then
-  . /usr/local/etc/bash_completion
+if [ -f /opt/homebrew/etc/bash_completion ]; then
+  . /opt/homebrew/etc/bash_completion
 fi
 
 for completion in ${HOME}/etc/bash_completion.d/*; do
@@ -32,28 +32,28 @@ export PS1="\u [\w] $ "
 # My pager
 export PAGER="vimpager"
 
-# Add /usr/local/sbin to the path
-export PATH="/usr/local/sbin:${PATH}"
-export MANPATH="/usr/local/share/man:${MANPATH}"
+# Add /opt/homebrew/sbin to the path
+export PATH="/opt/homebrew/sbin:${PATH}"
+export MANPATH="/opt/homebrew/share/man:${MANPATH}"
 
 # coreutils
-export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
-export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}"
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:${PATH}"
+export MANPATH="/opt/homebrew/opt/coreutils/libexec/gnuman:${MANPATH}"
 
 # sed
-export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
-export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:${MANPATH}"
+export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:${PATH}"
+export MANPATH="/opt/homebrew/opt/gnu-sed/libexec/gnuman:${MANPATH}"
 
 # grep
-export PATH="/usr/local/opt/grep/libexec/gnubin:${PATH}"
-export MANPATH="/usr/local/opt/grep/libexec/gnuman:${MANPATH}"
+export PATH="/opt/homebrew/opt/grep/libexec/gnubin:${PATH}"
+export MANPATH="/opt/homebrew/opt/grep/libexec/gnuman:${MANPATH}"
 
 # getopt
-export PATH="/usr/local/opt/gnu-getopt/bin:${PATH}"
-export MANPATH="/usr/local/opt/gnu-getopt/share/man:${MANPATH}"
+export PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}"
+export MANPATH="/opt/homebrew/opt/gnu-getopt/share/man:${MANPATH}"
 
 # mysql
-export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
 # Add ~/.composer/vendor/bin to the path
 export PATH="${HOME}/.composer/vendor/bin:${PATH}"
@@ -62,8 +62,8 @@ export PATH="${HOME}/.composer/vendor/bin:${PATH}"
 export PATH="${HOME}/bin:${PATH}"
 
 # Add ruby to the path
-export PATH="/usr/local/opt/ruby/bin:${PATH}"
-export PATH="/usr/local/lib/ruby/gems/3.0.0/bin:${PATH}"
+export PATH="/opt/homebrew/opt/ruby/bin:${PATH}"
+export PATH="/opt/homebrew/lib/ruby/gems/3.0.0/bin:${PATH}"
 
 # Bash history
 export HISTSIZE=10000
@@ -94,3 +94,5 @@ export LANGUAGE="en_US"
 export C_CTYPE="en_US.UTF-8"
 export LC_NUMERIC="en_US"
 export LC_TIME="en_US.UTF-8"
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
