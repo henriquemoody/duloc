@@ -34,15 +34,12 @@
 		"*.ttf",
 		"*.zip"
 	],
-	"color_scheme": "Packages/RailsBase16 Color Schemes/RailsBase16-tomorrow.light.tmTheme",
+	"color_scheme": "Sixteen.sublime-color-scheme",
 	"default_line_ending": "unix",
 	"ensure_newline_at_eof_on_save": true,
 	"font_face": "Monaco",
 	"font_size": 14,
-	"ignored_packages":
-	[
-		"Base16 Color Schemes",
-		"Vintage",
+	"ignored_packages": [
 	],
 	"indent_guide_options":
 	[

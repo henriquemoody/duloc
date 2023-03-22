@@ -1,13 +1,8 @@
 {
 	"bootstrapped": true,
-	"in_process_packages":
-	[
-		"Base16 Color Schemes",
-	],
+	"in_process_packages": [],
 	"installed_packages":
 	[
-		"1337 Color Scheme",
-		"Base16 Color Schemes",
 		"Behat",
 		"Dockerfile Syntax Highlighting",
 		"EditorConfig",
@@ -23,7 +18,6 @@
 		"PHP Companion",
 		"PHP Getters and Setters",
 		"Puppet",
-		"RailsBase16 Color Schemes",
 		"SCSS",
 		"SideBarEnhancements",
 		"Smarty",
