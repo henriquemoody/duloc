@@ -26,6 +26,10 @@ for completion in ${HOME}/etc/bash_completion.d/*; do
   source "${completion}"
 done
 
+if [ -f "${HOME}/.mb/completion.sh" ]; then
+  source "${HOME}/.mb/completion.sh"
+fi
+
 # Custom PS1
 export PS1="\u [\w] $ "
 
