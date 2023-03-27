@@ -29,7 +29,7 @@ set -euo pipefail
 declare -r IFS=$'\n'
 declare -r FORMULA=${1}
 declare -r BINARY=$(which "${FORMULA}")
-declare -r CURRENT_VERSION=$(realpath "${BINARY}" | sed -E 's,/usr/local/Cellar/,,; s,/.*,,; s,^.+@,,')
+declare -r CURRENT_VERSION=$(realpath "${BINARY}" | sed -E 's,/opt/homebrew/Cellar/,,; s,/.*,,; s,^.+@,,')
 declare -r TARGET_VERSION=${2}
 
 if [[ ${CURRENT_VERSION} = ${TARGET_VERSION} ]]; then
