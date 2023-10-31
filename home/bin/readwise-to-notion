@@ -1,0 +1,163 @@
+#!/usr/bin/env python
+
+from notion_client import Client
+import datetime
+import requests
+import re
+import os
+from functools import cache
+
+
+READWISE_TOKEN=os.environ.get('READWISE_TOKEN')
+NOTION_TOKEN=os.environ.get('NOTION_TOKEN')
+
+BOOKS_DATABASE_ID = os.environ.get('NOTION_BOOKS_DATABASE_ID')
+HIGHLIGHT_DATABASE_ID = os.environ.get('NOTION_HIGHLIGHT_DATABASE_ID')
+
+notion = Client(auth=NOTION_TOKEN)
+
+a_week_ago = datetime.datetime.now() - datetime.timedelta(days=7)
+
+def get_readwise_books():
+    querystring = {
+        "category": "books",
+        "updated__gt": a_week_ago.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+
+    response = requests.get(
+        url="https://readwise.io/api/v2/books/",
+        headers={"Authorization": "Token " + READWISE_TOKEN},
+        params=querystring
+    )
+
+    return response.json().get('results', [])
+
+def get_readwise_highlights(book_id):
+    querystring = {
+        'book_id': book_id,
+        "highlighted_at__gt": a_week_ago.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+
+    response = requests.get(
+        url="https://readwise.io/api/v2/highlights/",
+        headers={"Authorization": "Token " + READWISE_TOKEN},
+        params=querystring,
+    )
+
+    return response.json().get('results', [])
+
+@cache
+def get_notion_book_id(title, author):
+    response = notion.databases.query(
+        database_id=BOOKS_DATABASE_ID,
+        filter={
+            "and": [
+                {
+                    "property": "Title",
+                    "rich_text": {
+                        "equals": title
+                    }
+                },
+                {
+                    "property": "Author",
+                    "rich_text": {
+                        "equals": author
+                    }
+                }
+            ]
+        }
+    )
+
+    return response['results'][0]['id'] if len(response['results']) > 0 else None
+
+@cache
+def is_highlight_in_notion(highlight):
+    response = notion.databases.query(
+        database_id=HIGHLIGHT_DATABASE_ID,
+        filter={
+            "property": "Highlight",
+            "rich_text": {
+                "equals": highlight
+            }
+        }
+    )
+    return len(response['results']) > 0
+
+def add_highlight_to_notion(book_id, highlight, highlighted_at, location_type, location, note):
+    properties = {
+        "Highlight": {
+            "type": "title",
+            "title": [
+                {
+                    "type": "text",
+                    "text": {
+                        "content": highlight
+                    }
+                }
+            ]
+        },
+        "Book": {
+            "relation": [{"id": book_id}]
+        },
+        "Highlighted at": {
+            "type": "date",
+            "date": {
+                "start": highlighted_at
+            }
+        },
+        "Location Type": {
+            "select": {
+                "name": location_type
+            }
+        },
+        "Location": {
+            "number": location
+        },
+        "Note": {
+            "type": "rich_text",
+            "rich_text": [
+                {
+                    "text": {
+                        "content": note
+                    }
+                }
+            ]
+        }
+    }
+
+    notion.pages.create(
+        parent={"database_id": HIGHLIGHT_DATABASE_ID},
+        properties=properties,
+        icon={"type": "external", "external": {"url": "https://www.notion.so/icons/tag_blue.svg?mode=light"}}
+    )
+
+for book in get_readwise_books():
+    book_title = re.sub(r"^([^:(]+).*", r"\1", book['title']).strip()
+    book_author = book['author']
+    notion_book_id = get_notion_book_id(book_title, book_author)
+
+    if not notion_book_id:
+        print("Could not find '%s' by '%s' in Notion" % (book_title, book_author))
+        continue
+
+    highlights = get_readwise_highlights(book['id'])
+    if not highlights:
+        continue
+
+    print("Saving highlights '%s' by '%s' to Notion" % (book_title, book_author))
+
+    for highlight in get_readwise_highlights(book['id']):
+        if is_highlight_in_notion(highlight['text']):
+            print("- Skipping: %s (%s)" % (highlight['text'], book_title))
+            continue
+    
+        print("- Creating: %s (%s)" % (highlight['text'], book_title))
+        
+        add_highlight_to_notion(
+            book_id=notion_book_id,
+            highlight=highlight['text'],
+            highlighted_at=highlight['highlighted_at'],
+            location_type=highlight['location_type'],
+            location=highlight['location'],
+            note=highlight['note']
+        );
