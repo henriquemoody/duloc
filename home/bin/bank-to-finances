@@ -3,8 +3,12 @@
 set -euo pipefail
 
 IFS=$'\n'
-BANK_FILENAME="${1}"
-PAYPAL_FILENAME="${2:-$(mktemp)}"
+MONTH="${1}"
+BANK_FILENAME="2023-${MONTH}.Bank.xls"
+PAYPAL_FILENAME="2023-${MONTH}.PayPal.csv"
+if [[ ! -f "${PAYPAL_FILENAME}" ]]; then
+  PAYPAL_FILENAME=$(mktemp)
+fi
 BASENAME="$(basename "${BANK_FILENAME}" ".xls")"
 TSV_FILENAME=$(mktemp)
 TSV_FILENAME_EXPENSES="${BASENAME}-Expenses.tsv"
