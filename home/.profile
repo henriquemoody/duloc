@@ -26,15 +26,11 @@ for completion in ${HOME}/etc/bash_completion.d/*; do
   source "${completion}"
 done
 
-if [ -f "${HOME}/.mb/completion.sh" ]; then
-  source "${HOME}/.mb/completion.sh"
-fi
-
 # Custom PS1
 export PS1="\u [\w] $ "
 
 # My pager
-export PAGER="vimpager"
+# export PAGER="vimpager"
 
 # Add /opt/homebrew/sbin to the path
 export PATH="/opt/homebrew/sbin:${PATH}"
@@ -81,11 +77,6 @@ export PHPENV_ROOT="${HOME}/.phpenv"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_361.jdk/Contents/Home/"
 export PATH="${JAVA_HOME}/bin:${PATH}"
 
-if [ -d "${PHPENV_ROOT}" ]; then
-  export PATH="${PHPENV_ROOT}/bin:${PATH}"
-  eval "$(phpenv init -)"
-fi
-
 # nvm
 export NVM_DIR="${HOME}/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
@@ -100,3 +91,23 @@ export LC_NUMERIC="en_US"
 export LC_TIME="en_US.UTF-8"
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# phpenv
+if [ -d "${PHPENV_ROOT}" ]; then
+  export PATH="${PHPENV_ROOT}/bin:${PATH}"
+  eval "$(phpenv init -)"
+fi
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$"PYENV_ROOT"/bin:${PATH}"
+eval "$(pyenv init -)"
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+
+# Local profile
+if [ -f "${HOME}/.profile.local" ]; then
+  source "${HOME}/.profile.local"
+fi
