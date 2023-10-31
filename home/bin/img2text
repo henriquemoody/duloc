@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+import argparse
+import pytesseract
+from PIL import Image
+import sys
+import re
+
+parser = argparse.ArgumentParser(
+    description="Converts a image into text",
+)
+parser.add_argument("image_path", help='path of the image you want to convert')
+
+args = parser.parse_args()
+img = Image.open(args.image_path)
+text = pytesseract.image_to_string(img)
+
+text_path = re.sub(r"(.+)\.([a-zA-Z]+)$", r"\1.txt", args.image_path)
+with open(text_path, 'w') as txt_file:
+    txt_file.write(text)
+
+print('Create file "%s" from "%s"' % (text_path, args.image_path))
