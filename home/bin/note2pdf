@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Usage: {script} SUPERNOTE_FILE
+# Converts a Supernote (*.note) file into PDF.
+#
+#   -h, --help          Displays this help
+#
+# Report bugs to Henrique Moody <henriquemoody@gmail.com>
+#
+
+set -euo pipefail
+
+_help()
+{
+  sed -E 's/^#\s?(.*)/\1/g' "${0}" |
+    sed -nE '/^Usage/,/^Report/p' |
+    sed "s/{script}/$(basename "${0}")/g"
+}
+
+if [[ ${#} -eq 0 ]] || [[ ${#} -ne 1 ]]; then
+  _help 1>&2
+  exit 1
+fi
+
+if [[ ${1} == '--help' ]] || [[ ${1} == '-h' ]]; then
+  _help
+  exit
+fi
+
+declare -r IFS=$'\n'
+declare -r NOTE_FILENAME="${1}"
+declare -r PDF_FILENAME=$(sed 's,\.note$,.pdf,' <<< "${NOTE_FILENAME}")
+
+supernote-tool convert --all --type pdf "${NOTE_FILENAME}" "${PDF_FILENAME}"
+
+echo "Created '${PDF_FILENAME}'"
