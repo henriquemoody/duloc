@@ -1,10 +1,13 @@
 {
 	"bootstrapped": true,
-	"in_process_packages": [],
+	"in_process_packages": [
+	],
 	"installed_packages":
 	[
 		"Behat",
+		"Brackets Color Scheme",
 		"Dockerfile Syntax Highlighting",
+		"DotENV",
 		"EditorConfig",
 		"EditorConfigSnippets",
 		"Emmet",
@@ -17,6 +20,7 @@
 		"Package Control",
 		"PHP Companion",
 		"PHP Getters and Setters",
+		"Pretty JSON",
 		"Puppet",
 		"SCSS",
 		"SideBarEnhancements",

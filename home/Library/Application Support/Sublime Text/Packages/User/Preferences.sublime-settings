@@ -34,12 +34,13 @@
 		"*.ttf",
 		"*.zip"
 	],
-	"color_scheme": "Sixteen.sublime-color-scheme",
+	"color_scheme": "Brackets Light.sublime-color-scheme",
 	"default_line_ending": "unix",
 	"ensure_newline_at_eof_on_save": true,
 	"font_face": "Monaco",
 	"font_size": 14,
 	"ignored_packages": [
+		"Vintage",
 	],
 	"indent_guide_options":
 	[
@@ -58,4 +59,6 @@
 	"trim_trailing_white_space_on_save": true,
 	"word_wrap": false,
 	"wrap_width": 80,
+	"dark_color_scheme": "Breakers.sublime-color-scheme",
+	"light_color_scheme": "Breakers.sublime-color-scheme",
 }
