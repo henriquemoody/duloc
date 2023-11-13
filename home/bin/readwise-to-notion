@@ -6,6 +6,7 @@ import requests
 import re
 import os
 from functools import cache
+from termcolor import cprint
 
 
 READWISE_TOKEN=os.environ.get('READWISE_TOKEN')
@@ -133,20 +134,20 @@ def add_highlight_to_notion(book_id, highlight, highlighted_at, location_type, l
 
 for book in get_readwise_books():
     book_title = re.sub(r"^([^:(]+).*", r"\1", book['title']).strip()
-    book_author = book['author']
-    notion_book_id = get_notion_book_id(book_title, book_author)
+    book_author = book['author'] or ""
 
+    cprint("Saving highlights '%s' by '%s' to Notion" % (book_title, book_author), "blue", attrs=["bold"])
+
+    notion_book_id = get_notion_book_id(book_title, book_author)
     if not notion_book_id:
-        print("Could not find '%s' by '%s' in Notion" % (book_title, book_author))
+        print("- Could not find '%s' by '%s' in Notion" % (book_title, book_author))
         continue
 
     highlights = get_readwise_highlights(book['id'])
     if not highlights:
         continue
 
-    print("Saving highlights '%s' by '%s' to Notion" % (book_title, book_author))
-
-    for highlight in get_readwise_highlights(book['id']):
+    for highlight in highlights:
         if is_highlight_in_notion(highlight['text']):
             print("- Skipping: %s (%s)" % (highlight['text'], book_title))
             continue
