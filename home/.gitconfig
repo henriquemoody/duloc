@@ -13,6 +13,7 @@
     fp = fetch --prune
     ri = rebase --interactive
     rie = rebase --interactive --keep-empty
+    count-lines = "! git log --author=\"$1\" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\\n\", add, subs, loc }' #"
 [user]
     name = Henrique Moody
     email = henriquemoody@gmail.com
@@ -45,3 +46,5 @@
     path = ~/opt/personal/.gitconfig
 [includeIf "gitdir:~/opt/work/"]
     path = ~/opt/work/.gitconfig
+[init]
+    defaultBranch = main
