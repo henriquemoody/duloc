@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Usage: {script} [ -o / --overwrite ] PHPT_FILENAME
+# Runs the PHP code inside a PHPT file.
+#
+# When "-o / --overwrite" is passed, it overwrites the EXPECT or EXPECTF
+# from the PHPT file.
+##
+
+set -euo pipefail
+
+if [[ ${#} -lt 1 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+if [[ ${1} == "--help" ]] || [[ ${1} == "-h" ]]; then
+  script-help "${0}"
+  exit
+fi
+
+phpt_extract() {
+  local filename="${1}"
+  local section="${2}"
+
+  sed --quiet --regexp-extended "/^--${section}--/,/^--/p" "${filename}" |\
+    grep --extended-regexp --invert-match '^--'
+}
+
+OVERWRITE=0
+EXPECT=1
+EXPECTF=1
+
+if [[ "${1:-}" == '-o' ]] || [[ "${1:-}" == '--overwrite' ]]; then
+  OVERWRITE=1
+  shift
+fi
+
+PHPT_FILENAME="${1}"
+PHP_FILENAME="tmp/$(sed --regexp-extended "s,.+/([^./]+)\.phpt$,\1.i.php,g" <<< "${PHPT_FILENAME}")"
+PHP_OUTPUT="tmp/$(sed --regexp-extended "s,.+/([^./]+)\.phpt$,\1.i.txt,g" <<< "${PHPT_FILENAME}")"
+
+if [[ "${2:-}" == '-o' ]] || [[ "${2:-}" == '--overwrite' ]]; then
+  OVERWRITE=1
+fi
+
+mkdir -p tmp
+touch "${PHP_OUTPUT}"
+phpt_extract "${PHPT_FILENAME}" "FILE" |
+  sed '/?>/d' |
+  sed "s,require 'vendor,require __DIR__ . '/../vendor," > "${PHP_FILENAME}"
+phpt_extract "${PHPT_FILENAME}" "EXPECT" | sed 's,^,// ,g' >> "${PHP_FILENAME}" || EXPECT=0
+phpt_extract "${PHPT_FILENAME}" "EXPECTF" | sed 's,^,// ,g' >> "${PHP_FILENAME}" || EXPECTF=0
+
+php "${PHP_FILENAME}" | tee "${PHP_OUTPUT}"
+
+if [[ ${OVERWRITE} -eq 0 ]]; then
+  exit
+fi
+
+PHPT_FILENAME_TMP=$(mktemp)
+
+if [[ "${EXPECT}" -eq 1 ]]; then
+  {
+    echo "--FILE--"
+    phpt_extract "${PHPT_FILENAME}" "FILE"
+    echo "--EXPECT--"
+    php "${PHP_FILENAME}" | head -c -1
+  } > "${PHPT_FILENAME_TMP}"
+fi
+
+if [[ "${EXPECTF}" -eq 1 ]]; then
+  {
+    echo "--FILE--"
+    phpt_extract "${PHPT_FILENAME}" "FILE"
+    echo "--EXPECTF--"
+    php "${PHP_FILENAME}" | head -c -1
+  } > "${PHPT_FILENAME_TMP}"
+fi
+
+mv "${PHPT_FILENAME_TMP}" "${PHPT_FILENAME}"
