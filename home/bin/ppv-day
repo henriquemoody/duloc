@@ -1,0 +1,94 @@
+#!/usr/bin/env python
+
+from notion_client import Client
+import argparse
+import re
+import os
+import termcolor
+from functools import cache
+from datetime import datetime
+
+
+parser = argparse.ArgumentParser(
+    description="Binds data to a Day page",
+)
+parser.add_argument("--date", required=False, help="The date of the day (YYYY-MM-DD)", default=datetime.now().strftime("%Y-%m-%d"))
+
+args = parser.parse_args()
+
+DATE = args.date
+NOTION_TOKEN=os.environ.get('NOTION_TOKEN')
+
+DAYS_DATABASE_ID = os.environ.get('NOTION_DAYS_DATABASE_ID')
+TASKS_DATABASE_ID = os.environ.get('NOTION_TASKS_DATABASE_ID')
+
+notion = Client(auth=NOTION_TOKEN)
+
+@cache
+def get_day_id(date):
+    response = notion.databases.query(
+        database_id=DAYS_DATABASE_ID,
+        filter={
+            "property": "Date",
+            "date": {
+                "equals": date
+            }
+        }
+    )
+
+    return response['results'][0]['id'] if len(response['results']) > 0 else None
+
+def get_tasks(date, day_id):
+    response = notion.databases.query(
+        database_id=TASKS_DATABASE_ID,
+        filter={
+            "and": [
+                {
+                    "property": "Do Date",
+                    "date": {
+                        "equals": date
+                    }
+                },
+                {
+                    "property": "Day",
+                    "relation": {
+                        "does_not_contain": day_id
+                    }
+                },
+                {
+                    "property": "Checked",
+                    "checkbox": {
+                        "equals": True
+                    }
+                }
+            ]
+        }
+    )
+
+    return response['results'] if len(response['results']) > 0 else []
+
+def bind_page_to_day(page_id, day_id):
+    notion.pages.update(
+        page_id,
+        properties={
+            "Day": {
+                "relation": [{"id": day_id}]
+            }
+        }
+    )
+
+def get_title(title):
+    return ' '.join([text['plain_text'] for text in title])
+termcolor.cprint("Binding data to '%s'" % datetime.strptime(DATE, "%Y-%m-%d").strftime("%B %-d, %Y"), "green")
+
+DAY_ID=get_day_id(DATE)
+if DAY_ID is None:
+    termcolor.cprint("Day not found", "red")
+    exit(1)
+
+termcolor.cprint("Tasks", "blue")
+for task in get_tasks(DATE, DAY_ID):
+    print("- " + ''.join([text['plain_text'] for text in task['properties']['Task']['title']]))
+    bind_page_to_day(task['id'], DAY_ID)
+else:
+    termcolor.cprint("- No task found", "yellow")

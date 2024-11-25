@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Usage: {script} [DAYS_DIFF] [DAYS_START]
+##
+
+set -euo pipefail
+
+declare IFS=$'\n'
+declare DAYS_DIFF=${1:-5}
+declare DAYS_START=${2:-0}
+
+if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
+  script-help "${0}"
+  exit
+fi
+
+seq ${DAYS_START} ${DAYS_DIFF} |
+  while read day; do
+      ppv-day --date $(date "+%Y-%m-%d" --date="${day} days ago");
+  done

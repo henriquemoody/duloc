@@ -1,0 +1,140 @@
+#!/usr/bin/env python
+
+from datetime import datetime
+from notion_client import Client
+from notion_client.helpers import collect_paginated_api
+import os
+
+NOTION_TOKEN = os.environ.get('NOTION_TOKEN')
+
+ACHIEVEMENTS_DATABASE_ID = os.environ.get('NOTION_ACHIEVEMENTS_DATABASE_ID')
+HABITS_DATABASE_ID = os.environ.get('NOTION_HABITS_DATABASE_ID')
+PRACTICES_DATABASE_ID = os.environ.get('NOTION_PRACTICES_DATABASE_ID')
+
+notion = Client(auth=NOTION_TOKEN)
+
+def get_habits():
+    results = collect_paginated_api(
+        notion.databases.query,
+        database_id=HABITS_DATABASE_ID,
+        sorts=[
+            {
+                "property": "Date",
+                "direction": "ascending"
+            }
+        ]
+    )
+
+    return results
+
+
+def get_practices_and_pillars():
+    results = collect_paginated_api(
+        notion.databases.query,
+        database_id=PRACTICES_DATABASE_ID,
+    )
+
+    practices = {}
+    pillars = {}
+    for result in results:
+        practice = result['properties']['Practice']['title'][0]['plain_text']
+        practices[practice] = result['id']
+        pillars[practice] = result['properties']['Pillars']
+
+    return practices, pillars
+
+
+def is_checked(property):
+    return property['checkbox'] == True
+
+
+def add_habbit_achievements(day_id, habit, number_of_weeks, practice_id, pillars):
+    prefix = "%s-week streak of daily " % number_of_weeks
+    notion.pages.create(
+        parent={"database_id": ACHIEVEMENTS_DATABASE_ID},
+        properties={
+            "Achievement": {
+                "type": "title",
+                "title": [
+                    {
+                        "type": "text",
+                        "text": {
+                            "content": prefix
+                        }
+                    },
+                    {
+                        "type": 'mention',
+                        "mention": {
+                            "page": {
+                                "id": practice_id,
+                            },
+                            "type": 'page',
+                        },
+                        "plain_text": habit,
+                        "href": 'https://www.notion.so/' + practice_id.replace("-", ""),
+                    }
+                ]
+            },
+            "Day": {
+                "relation": [{"id": day_id}],
+            },
+            "Pillars": pillars
+        },
+        icon={
+            "type": "external",
+            "external": {"url": "https://www.notion.so/icons/champagne_blue.svg?mode=light"}
+        }
+    )
+
+
+habits_catalog = {
+    "Stretching": 0,
+    "Vitamins": 0,
+    "Silence": 0,
+    "Check-in": 0,
+    "Audiobook": 0,
+    "Reading": 0,
+    "Speed Reading": 0,
+    "Organizing": 0,
+    "Workout": 0,
+    "Water": 0,
+    "Diligence": 0,
+    "Restraint": 0,
+    "Bedtime routine": 0,
+    "Meditation": 0,
+    "Journaling": 0,
+    "Stargazing": 0,
+    "Punching": 0,
+    "Fears": 0,
+    "Walking": 0,
+    "Coding": 0,
+    "Origami": 0,
+    "Shower": 0,
+    "Yoga": 0,
+}
+
+day_id = None
+practices, pillars = get_practices_and_pillars()
+for habbits in get_habits():
+    date = datetime.strptime(habbits['properties']['Date']['date']['start'], '%Y-%m-%d')
+    if date.weekday() == 6:
+        day_id = habbits['properties']['Day']['relation'][0]['id']
+
+    for habit in habits_catalog:
+        if not is_checked(habbits['properties'][habit]):
+            habits_catalog[habit] = 0
+            continue
+
+        habits_catalog[habit] += 1
+
+for habit in habits_catalog:
+    number_of_weeks = habits_catalog[habit] // 7
+    print("Habit: %s, weeks: %s" % (habit, number_of_weeks))
+    if number_of_weeks > 0:
+        add_habbit_achievements(
+            day_id,
+            habit,
+            number_of_weeks,
+            practices[habit],
+            pillars[habit]
+        )
