@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Usage: {script} PULL_REQUEST_ID [ BRANCH ] [ REMOTE ]
+#
+# Creates a branch from a GitHub pull request.
+#
+# Default values:
+#
+# BRANCH: the "pr/" + the pull request number
+# REMOTE: "origin"
+##
+
+set -euo pipefail
+
+declare -r IFS=$'\n'
+
+if [[ ${#} -ne 1 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+if [[ "${1}" == "--help" ]] || [[ "${1}" == "-h" ]]; then
+  script-help "${0}"
+  exit
+fi
+
+declare -r PULL_REQUEST_ID="${1}"
+declare -r BRANCH=${2:-"pr/${PULL_REQUEST_ID}"}
+declare -r NAME=${3:-"origin"}
+
+if [ -z ${PULL_REQUEST_ID} ]; then
+  echo "Missing pull request number"
+  return 1
+fi
+
+git fetch "${NAME}" "pull/${PULL_REQUEST_ID}/head:${BRANCH}"
+git checkout "${BRANCH}"
