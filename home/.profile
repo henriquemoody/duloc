@@ -77,6 +77,9 @@ export PHPENV_ROOT="${HOME}/.phpenv"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_361.jdk/Contents/Home/"
 export PATH="${JAVA_HOME}/bin:${PATH}"
 
+# go - Use `chflags hidden go` to hide it on Finder
+export PATH="${HOME}/go/bin:${PATH}"
+
 # nvm
 export NVM_DIR="${HOME}/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
