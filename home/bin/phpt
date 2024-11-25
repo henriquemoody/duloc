@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# Usage: {script} [ OPTIONS ] PHPT_FILENAME
+# Runs the PHP code inside a PHPT file.
+#
+#  -h, --help                 Displays this help message.
+#  -o, --overwrite            Overwrites the `--EXPECT--` or `--EXPECTF--` from the PHPT file.
+#  -s, --silent               Does not output the output of the ran `--FILE--` section.
+#  -t, --test                 Runs the PHPT file with PHPUnit.
+#
+##
+
+set -euo pipefail
+
+phpt_extract() {
+  local filename="${1}"
+  local section="${2}"
+
+  sed --quiet --regexp-extended "/^--${section}--/,/^--/p" "${filename}" |
+    grep --extended-regexp --invert-match '^--'
+}
+
+declare PHPT_FILENAME
+declare OVERWRITE_PHPT_FILE=0
+declare RUN_SILENTLY=0
+declare RUN_TEST=0
+
+declare CONTAINS_EXPECT=1
+declare CONTAINS_EXPECTF=1
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -h|--help)
+      script-help "${0}"
+      exit
+      ;;
+    -o|--overwrite)
+      OVERWRITE_PHPT_FILE=1
+      shift
+      ;;
+    -s|--silent)
+      RUN_SILENTLY=1
+      shift
+      ;;
+    -t|--test)
+      RUN_TEST=1
+      shift
+      ;;
+    *)
+      PHPT_FILENAME="${1}"
+      shift
+      ;;
+  esac
+done
+
+if [[ -z "${PHPT_FILENAME:-}" ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+declare PHP_RUNNABLE_FILENAME="tmp/$(sed --regexp-extended "s,.+/([^./]+)\.phpt$,\1.i.php,g" <<< "${PHPT_FILENAME}")"
+declare STDOUT_FILENAME="tmp/$(sed --regexp-extended "s,.+/([^./]+)\.phpt$,\1.i.stdout.txt,g" <<< "${PHPT_FILENAME}")"
+declare STDERR_FILENAME="tmp/$(sed --regexp-extended "s,.+/([^./]+)\.phpt$,\1.i.stderr.txt,g" <<< "${PHPT_FILENAME}")"
+
+mkdir --parents tmp
+touch "${STDOUT_FILENAME}"
+touch "${STDERR_FILENAME}"
+phpt_extract "${PHPT_FILENAME}" "FILE" |
+  sed '/?>/d' |
+  sed "s,require 'vendor,require __DIR__ . '/../vendor," > "${PHP_RUNNABLE_FILENAME}"
+phpt_extract "${PHPT_FILENAME}" "EXPECT" | sed 's,^,// ,g' >> "${PHP_RUNNABLE_FILENAME}" || CONTAINS_EXPECT=0
+phpt_extract "${PHPT_FILENAME}" "EXPECTF" | sed 's,^,// ,g' >> "${PHP_RUNNABLE_FILENAME}" || CONTAINS_EXPECTF=0
+
+php "${PHP_RUNNABLE_FILENAME}" > "${STDOUT_FILENAME}" 2> "${STDERR_FILENAME}" ||
+  echo "${STDERR_FILENAME}" 1>&2
+
+if [[ ${RUN_SILENTLY} -eq 0 ]]; then
+  cat "${STDOUT_FILENAME}"
+fi
+
+if [[ ${RUN_TEST} -eq 1 ]]; then
+  vendor/bin/phpunit "${PHPT_FILENAME}"
+fi
+
+if [[ ${OVERWRITE_PHPT_FILE} -eq 1 ]]; then
+  TEMPORARY_PHPT_FILENAME=$(mktemp)
+
+  if [[ ${CONTAINS_EXPECT} -eq 1 ]]; then
+    {
+      echo "--FILE--"
+      phpt_extract "${PHPT_FILENAME}" "FILE"
+      echo "--EXPECT--"
+      head -c -1 < "${STDOUT_FILENAME}"
+    } > "${TEMPORARY_PHPT_FILENAME}"
+
+  elif [[ ${CONTAINS_EXPECTF} -eq 1 ]]; then
+    {
+      echo "--FILE--"
+      phpt_extract "${PHPT_FILENAME}" "FILE"
+      echo "--EXPECTF--"
+      head -c -1 < "${STDOUT_FILENAME}" |
+        sed -E "s,in ${HOME}/.+$,%s,g" |
+        sed -E 's,([0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]+),%d:%d:%d.%d,g' |
+        sed -E 's,([0-9]+([-/.])[0-9]+([-/.])[0-9]+),%d\2%d\3%d,g'
+    } > "${TEMPORARY_PHPT_FILENAME}"
+
+  fi
+
+  if [[ -n "$(tail -c 1 "${TEMPORARY_PHPT_FILENAME}")" ]]; then
+    echo >> "${TEMPORARY_PHPT_FILENAME}"
+  fi
+
+  mv "${TEMPORARY_PHPT_FILENAME}" "${PHPT_FILENAME}"
+fi
