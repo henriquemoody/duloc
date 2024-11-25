@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+sed -nE "/^# Usage/,/^##/p" "${1}" |
+  sed -E "s/^#\s?(.*)/\1/g" |
+  grep -v "^#$" |
+  sed "s/{script}/$(basename "${1}")/g"

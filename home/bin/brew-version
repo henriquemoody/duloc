@@ -1,26 +1,15 @@
 #!/usr/bin/env bash
 # Usage: {script} FORMULA TARGET_VERSION
 # Symlink a brew formula to a specific version.
-#
-#   -h, --help          Displays this help
-#
-# Report bugs to Henrique Moody <henriquemoody@gmail.com>
-#
-
-_help()
-{
-  sed -E 's/^#\s?(.*)/\1/g' "${0}" |
-    sed -nE '/^Usage/,/^Report/p' |
-    sed "s/{script}/$(basename "${0}")/g"
-}
+##
 
 if [[ ${#} -eq 0 ]] || [[ ${#} -ne 2 ]]; then
-  _help 1>&2
+  script-help "${0}" 1>&2
   exit 1
 fi
 
-if [[ ${1} == '--help' ]] || [[ ${1} == '-h' ]]; then
-  _help
+if [[ ${1} == "--help" ]] || [[ ${1} == "-h" ]]; then
+  script-help "${0}"
   exit
 fi
 

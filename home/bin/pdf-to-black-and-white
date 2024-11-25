@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
+# Usage: {script} CURRENT [NEW]
+##
+
+if [[ ${#} -eq 0 ]] || [[ ${#} -ne 1 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+if [[ ${1} == "--help" ]] || [[ ${1} == "-h" ]]; then
+  script-help "${0}"
+  exit
+fi
 
 CURRENT="${1}"
-NEW=${CURRENT/.pdf/-bianco-e-nero.pdf}
+NEW=${CURRENT/.pdf/-black-and-white.pdf}
 
 gs\
  -sOutputFile="${NEW}"\

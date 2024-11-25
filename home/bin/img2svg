@@ -1,35 +1,23 @@
 #!/usr/bin/env bash
 # Usage: {script} IMAGE_FILENAME
-# Converts an image to SVG.
-#
-#   -h, --help          Displays this help
-#
-# Report bugs to Henrique Moody <henriquemoody@gmail.com>
-#
-
-set -euo pipefail
-
-_help()
-{
-  sed -E 's/^#\s?(.*)/\1/g' "${0}" |
-    sed -nE '/^Usage/,/^Report/p' |
-    sed "s/{script}/$(basename "${0}")/g"
-}
+##
 
 if [[ ${#} -eq 0 ]] || [[ ${#} -ne 1 ]]; then
-  _help 1>&2
+  script-help "${0}" 1>&2
   exit 1
 fi
 
-if [[ ${1} == '--help' ]] || [[ ${1} == '-h' ]]; then
-  _help
+if [[ ${1} == "--help" ]] || [[ ${1} == "-h" ]]; then
+  script-help "${0}"
   exit
 fi
+
+set -euo pipefail
 
 declare -r IFS=$'\n'
 declare -r IMAGE_FILENAME="${1}"
 declare -r PNM_FILENAME="$(mktemp).pnm"
 declare -r SVG_FILENAME="$(sed --regexp-extended "s,(.+)\.([a-zA-Z]+)$,\1.svg," <<< "${IMAGE_FILENAME}")"
 
-convert "${IMAGE_FILENAME}" "${PNM_FILENAME}"
+magick "${IMAGE_FILENAME}" "${PNM_FILENAME}"
 potrace "${PNM_FILENAME}" --svg --output "${SVG_FILENAME}"
