@@ -46,12 +46,26 @@ s/.*Bar.*/Luxury/
 s/.*Food Delivery.*/Luxury/
 s/.*koffie.*/Luxury/I
 s/.*Cafe.*/Luxury/I
+s/.*Coffee.*/Luxury/I
+s/.*McDonalds.*/Luxury/I
+s/.*KFC.*/Luxury/I
+s/.*Pizza.*/Luxury/I
 
 s/Munganga/Entertainment/
 s/Paylogic: .+/Entertainment/
+s/Pathe/Entertainment/
+s/.*forro.*/Entertainment/
+s/.*forró.*/Entertainment/
 
 s/Bol/Stuff/
+s/Blokker/Stuff/
+s/Xenos/Stuff/
+s/TK Maxx/Stuff/
+s/Amazon/Stuff/
+s/HEMA/Stuff/
+s/GAMMA/Stuff/
 s/IKEA/Stuff/
+s/Zalando/Stuff/
 
 s/OV-Chipkaart/Transportation/
 s/Greenwheels/Transportation/
@@ -59,6 +73,11 @@ s/Nederlandse Spoorwegen/Transportation/
 s/Diks/Transportation/
 
 s/Airbnb/Stay/
+s/Booking/Stay/
+
+s/Geldmaat/Withdraw/
+
+s/Tikkie in: .+/Return/
 
 s/ABN AMRO Basic Package/Service/
 s/Netflix/Service/
