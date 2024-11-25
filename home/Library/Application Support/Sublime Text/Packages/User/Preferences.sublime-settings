@@ -61,4 +61,6 @@
 	"wrap_width": 80,
 	"dark_color_scheme": "Breakers.sublime-color-scheme",
 	"light_color_scheme": "Breakers.sublime-color-scheme",
+	"index_files": false,
+	"update_check": false,
 }
