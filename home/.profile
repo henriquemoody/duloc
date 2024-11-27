@@ -9,11 +9,13 @@ fi
 # User specific aliases and functions
 alias egrep='egrep --color'
 alias grep='grep --color'
-alias jless='python -m json.tool | less'
 alias ls="ls --color=auto"
-alias k="kubectl"
+
+alias jless='python -m json.tool | less'
+
 alias psgrep='ps aux | grep -v grep | grep'
 alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
+
 alias from-dutch='translate --from=nl --to=en --say=text'
 alias to-dutch='translate --from=en --to=nl --say=translation'
 
