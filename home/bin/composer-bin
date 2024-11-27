@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Usage: {script} BINARY [ARG...]
+# Runs binary from a Composer project.
+#
+# This script tries to find a given binary inside a Composer project's "bin/"
+# directory. Its advantage is that it tries to find the directory automatically
+# without you having to know where it is.
+#
+# Example without this script:
+#
+#     ./vendor/bin/phpunit --stop-on-failiure
+#
+# Example with this script:
+#
+#     {script} phpunit --stop-on-failiure
+#
+# You can then create aliases to make it easier to run those binaries, for example:
+#
+#     alias phpunit="{script} phpunit"
+#
+# With that, you can simply run `phpunit` instead of `./vendor/bin/phpunit`.
+##
+
+set -euo pipefail
+
+if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
+  script-help "${0}"
+  exit
+fi
+
+if [[ ${#} -lt 1 ]]; then
+  script-help "${0}" 2>&1
+  exit 1
+fi
+
+declare IFS=$'\n'
+declare BINARY="${1}"
+
+shift
+
+if [[ ! -e "composer.json" ]]; then
+  echo "Could not find composer.json file" 1>&2
+  exit 1
+fi
+
+BINARY_DIRECTORY=$(jq -r '.config."bin-dir"' < composer.json)
+if [[ "${BINARY_DIRECTORY}"  == "null" ]]; then
+  BINARY_DIRECTORY="vendor/bin"
+fi
+
+if [[ ! -e "${BINARY_DIRECTORY}/${BINARY}" ]]; then
+  echo "Could not find '${BINARY}' in '${BINARY_DIRECTORY}'" 1>&2
+  exit 2
+fi
+
+${BINARY_DIRECTORY}/${BINARY} "${@}"
