@@ -19,6 +19,12 @@ alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
 alias from-dutch='translate --from=nl --to=en --say=text'
 alias to-dutch='translate --from=en --to=nl --say=translation'
 
+alias phpcbf="php-vendor phpcbf"
+alias phpcs="php-vendor phpcs"
+alias phpstan="php-vendor phpstan"
+alias phpstan="php-vendor phpstan"
+alias phpunit="php-vendor phpunit"
+
 # Bash completion
 if [ -f /opt/homebrew/etc/bash_completion ]; then
   . /opt/homebrew/etc/bash_completion

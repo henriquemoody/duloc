@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if [[ ! -e "composer.json" ]]; then
+  echo "Could not find composer.json file" 1>&2
+  exit 1
+fi
+
+BIN_DIR=$(jq -r '.config."bin-dir"' < composer.json)
+if [[ "${BIN_DIR}"  == "null" ]]; then
+  BIN_DIR="vendor/bin"
+fi
+
+${BIN_DIR}/"${@}"
