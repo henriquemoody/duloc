@@ -11,3 +11,4 @@ git-ignored.*
 *.i
 *yarn-error.log
 Icon
+.obsidian
