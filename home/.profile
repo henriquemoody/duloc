@@ -19,6 +19,7 @@ alias pskill='awk '"'"'{print $2}'"'"' | sort -d | xargs -n1 kill -9'
 alias from-dutch='translate --from=nl --to=en --say=text'
 alias to-dutch='translate --from=en --to=nl --say=translation'
 
+alias pest="composer-bin pest"
 alias phpcbf="composer-bin phpcbf"
 alias phpcs="composer-bin phpcs"
 alias phpstan="composer-bin phpstan"
