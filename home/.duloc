@@ -1,0 +1,95 @@
+PROFILES=()
+
+duloc-list()
+{
+  # Usage: duloc list
+  # List all profiles in your shell, and tells which one ones are loaded.
+  ls -1 "${HOME}/.profile."* |
+    sed "s,${HOME}/.profile.,," |
+    while read profile; do
+      printf "  %-10s" ${profile}
+      if duloc-is-loaded "${profile}"; then
+        echo -e "\033[32mLoaded\033[m"
+      else
+        echo -e "Not loaded"
+      fi
+    done
+}
+
+duloc-is-loaded()
+{
+  local profile="${1}"
+
+  for loaded_profile in "${PROFILES[@]}"; do
+    test "${loaded_profile}" == "${profile}" && return 0
+  done
+
+  return 1
+}
+
+duloc-load()
+{
+  # Usage: duloc load PROFILE
+  # Loads a profile to your shell.
+  #
+  # You can run `duloc list` to see all available profiles.
+  local profile="${1}"
+  local filename="${HOME}/.profile.${profile}"
+
+  if duloc-is-loaded "${profile}"; then
+    echo "Profile \`${profile}\` is already loaded."
+    return 0
+  fi
+
+  if [[ ! -f "${filename}" ]]; then
+    echo "Profile \`${profile}\` not found." 1>&2
+    return 1
+  fi
+
+  PROFILES+=("${profile}")
+
+  source "${filename}"
+  echo "Profile \`${profile}\` has been loaded."
+}
+
+duloc-read()
+{
+  # Usage: duloc read PROFILE
+  # Reads the content of a profile file.
+  local profile="${1}"
+  local filename="${HOME}/.profile.${profile}"
+
+  if [[ ! -f "${filename}" ]]; then
+    echo "Profile \`${profile}\` not found." 1>&2
+    return 1
+  fi
+
+  less "${filename}"
+}
+
+duloc-help()
+{
+  # Usage: duloc command [ OPTIONS ]
+  # Loads profiles in your castle.
+
+  local command="${1:-help}"
+
+  sed --silent --regexp-extended "/^duloc-${command}/,/^}/p" "${BASH_SOURCE}" |
+    grep '^  #' |
+    sed --regexp-extended 's,^  # ?,,'
+}
+
+duloc()
+{
+  local command="${1}"
+
+  shift
+
+  case "${command}" in
+    load) duloc-load "${@}" ;;
+    read) duloc-read "${@}" ;;
+    list) duloc-list ;;
+    help) duloc-help "${@}" ;;
+    *) duloc-help 1>&2 ;;
+  esac
+}

@@ -119,7 +119,8 @@ test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shel
 
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 
+# Load "duloc" functions
+source "${HOME}/.duloc"
+
 # Local profile
-if [ -f "${HOME}/.profile.local" ]; then
-  source "${HOME}/.profile.local"
-fi
+duloc load "local" > /dev/null
