@@ -66,11 +66,13 @@ s/HEMA/Stuff/
 s/GAMMA/Stuff/
 s/IKEA/Stuff/
 s/Zalando/Stuff/
+s/Hornbach/Stuff/
 
 s/OV-Chipkaart/Transportation/
 s/Greenwheels/Transportation/
 s/Nederlandse Spoorwegen/Transportation/
 s/Diks/Transportation/
+s/Parking/Transportation/
 
 s/Airbnb/Stay/
 s/Booking/Stay/

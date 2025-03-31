@@ -26,8 +26,9 @@ fi
 
 IFS=$'\n'
 MONTH="${1}"
-BANK_FILENAME="2024-${MONTH}.Bank.xls"
-PAYPAL_FILENAME="2024-${MONTH}.PayPal.csv"
+YEAR=$(date +%Y)
+BANK_FILENAME="${YEAR}-${MONTH}.Bank.xls"
+PAYPAL_FILENAME="${YEAR}-${MONTH}.PayPal.csv"
 if [[ ! -f "${PAYPAL_FILENAME}" ]]; then
   PAYPAL_FILENAME=$(mktemp)
 fi

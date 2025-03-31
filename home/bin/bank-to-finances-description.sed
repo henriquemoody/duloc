@@ -20,7 +20,7 @@ s,^[A-Z]{3} +NR:[A-Z0-9]+ +[0-9]{2}\.[0-9]{2}\.[0-9]{2}\/[0-9]{2}.[0-9]{2} +(.+)
 
 s/Abn Amro Bank N.V. Basic Package.+/ABN AMRO Basic Package/
 s,^Sumup ,,
-s,^Ah .+$,Albert Heijn,
+s,^Ah .+$,Albert Heijn,g
 s,(Albert Heijn|Tanger|Pathe|Xenos|Stach|Mcdonalds|Kfc|Hema|Jumbo|Lidl|Relay|Kruidvat|Kiosk|Etos|Waterschap) .+,\1,
 s,^Paypal( .+)?,PayPal,
 s,^Zilveren Kruis .+,Zilveren Kruis,
@@ -40,6 +40,7 @@ s,Dirk Vdbroek.+,Dirk van den Broek,
 s,Ziggo.+,Ziggo,
 s,Vattenfall.+,Vattenfall,
 s,Langswater 668-799,VvE,
+s,Vve Langwater 668 799,VvE,
 s,Blokker[0-9]+.+,Blokker,
 s,ov-chipkaart.+,OV-Chipkaart,
 s, +$,,
@@ -73,3 +74,5 @@ s, Van , van ,
 s, En , en ,
 s, De , de ,
 s,^\*,,
+s,Hornbach Amsterdam,Hornbach,
+s,Aanmeldenparkeren.Amsterdam,Parking,
