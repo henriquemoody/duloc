@@ -123,4 +123,4 @@ export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 source "${HOME}/.duloc"
 
 # Local profile
-duloc load "local" > /dev/null
+duloc load "personal" > /dev/null
