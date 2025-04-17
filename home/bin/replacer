@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Usage: {script} SOURCE TARGET
+# Find a text and replace it in files, but also filenames and directories.
+##
+
+declare -r IFS=$'\n'
+
+if [[ ${#} -ne 2 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+rename-filename() {
+  local source_filename="${1}"
+  local target_filename="$(sed "s,${SOURCE},${TARGET}," <<< "${source_filename}")"
+
+  git status 2> /dev/null 1>&2 &&
+    git mv "${source_filename}" "${target_filename}" ||
+    mv "${source_filename}" "${target_filename}"
+}
+
+declare SOURCE="${1}"
+declare TARGET="${2}"
+
+echo "Replacing '${SOURCE}' with '${TARGET}'"
+
+echo "- Replacing content"
+rg "${SOURCE}" -l |
+  xargs -n1 sed -i "s,${SOURCE},${TARGET},g"
+
+echo "- Renaming directories"
+find . -name "*${SOURCE}*" -type d |
+  while read filename; do
+    rename-filename "${filename}"
+  done
+
+echo "- Renaming files"
+find . -name "*${SOURCE}*" -type f |
+  while read filename; do
+    rename-filename "${filename}"
+  done
+
+echo "Done"
+
