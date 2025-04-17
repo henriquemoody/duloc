@@ -70,7 +70,7 @@ duloc-read()
 duloc-help()
 {
   # Usage: duloc command [ OPTIONS ]
-  # Loads profiles in your castle.
+  # Manages profiles in your castle. Available commands: load, read, list, help
 
   local command="${1:-help}"
 
