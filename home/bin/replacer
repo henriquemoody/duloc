@@ -1,44 +1,91 @@
 #!/usr/bin/env bash
-# Usage: {script} SOURCE TARGET
+# Usage: {script} SOURCE TARGET [PATH]
 # Find a text and replace it in files, but also filenames and directories.
 ##
 
 declare -r IFS=$'\n'
+declare -r SOURCE="${1}"
+declare -r TARGET="${2}"
+declare -r REPLACEMENT_PATH="${3:-.}"
+declare -r IGNORED_PATTERN="(.git|vendor/)"
 
-if [[ ${#} -ne 2 ]]; then
+if [[ ${#} -lt 2 ]]; then
   script-help "${0}" 1>&2
   exit 1
 fi
 
-rename-filename() {
-  local source_filename="${1}"
-  local target_filename="$(sed "s,${SOURCE},${TARGET}," <<< "${source_filename}")"
+ttl() {
+  local source="${1}"
+  local target="${2}"
+  local path="${3}"
+  local subject="${4}"
+  out "[fg:green]Replacing '[][bg:green]${source}[][fg:green]' with '[][bg:green]${target}[][fg:green]' in the [][bg:green]${subject}[][fg:green] of files in \`$(out-path "${path}")\`"
+}
 
-  git status 2> /dev/null 1>&2 &&
+rename-filename() {
+  local source="${1}"
+  local target="${2}"
+  local source_filename="${3}"
+  local target_filename="$(sed "s,${source},${target}," <<< "${source_filename}")"
+
+  git log "${source_filename}" 2> /dev/null 1>&2 &&
     git mv "${source_filename}" "${target_filename}" ||
     mv "${source_filename}" "${target_filename}"
 }
 
-declare SOURCE="${1}"
-declare TARGET="${2}"
+replacer-content() {
+  local source="${1}"
+  local target="${2}"
+  local path="${3:-.}"
 
-echo "Replacing '${SOURCE}' with '${TARGET}'"
-
-echo "- Replacing content"
-rg "${SOURCE}" -l |
-  xargs -n1 sed -i "s,${SOURCE},${TARGET},g"
-
-echo "- Renaming directories"
-find . -name "*${SOURCE}*" -type d |
+  ttl "${source}" "${target}" "${path}" "content"
   while read filename; do
-    rename-filename "${filename}"
-  done
+    out "- Replacing content in [fg:cyan]${filename}"
+    sed -i "s,${source},${target},g" "${filename}"
+  done < <(rg "${source}" -l "${path}" | grep --extended-regexp --invert-match "${IGNORED_PATTERN}")
+}
 
-echo "- Renaming files"
-find . -name "*${SOURCE}*" -type f |
-  while read filename; do
-    rename-filename "${filename}"
-  done
+replacer-directory-names() {
+  local source="${1}"
+  local target="${2}"
+  local directory="${3}"
 
-echo "Done"
+  ttl "${source}" "${target}" "${path}" "directory names"
+  find "${directory}" -name "*${source}*" -type d |
+    grep --extended-regexp --invert-match "${IGNORED_PATTERN}" |
+    while read filename; do
+      out "- Renaming directory [fg:cyan]${filename}"
+      rename-filename "${source}" "${target}" "${filename}"
+    done
+}
 
+replacer-filenames() {
+  local source="${1}"
+  local target="${2}"
+  local directory="${3}"
+
+  ttl "${source}" "${target}" "${path}" "file names"
+  find "${directory}" -name "*${source}*" -type f |
+    grep --extended-regexp --invert-match "${IGNORED_PATTERN}" |
+    while read filename; do
+      out "- Renaming filename [fg:cyan]${filename}"
+      rename-filename "${source}" "${target}" "${filename}"
+    done
+}
+
+replacer() {
+  local source="${1}"
+  local target="${2}"
+  local path="${3:-.}"
+  local directory="${path}"
+
+  if [[ ! -d "${directory}" ]]; then
+    directory=$(dirname "${directory}")
+  fi
+
+  replacer-content "${source}" "${target}" "${path}"
+  replacer-directory-names "${source}" "${target}" "${directory}"
+  replacer-filenames "${source}" "${target}" "${directory}"
+}
+
+replacer "${SOURCE}" "${TARGET}" "${REPLACEMENT_PATH}"
