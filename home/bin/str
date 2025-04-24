@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+declare -r IFS=$'\n'
+
+str() {
+  local input
+  local action
+  local separator
+  local actions=()
+
+  if [ ! -t 0 ]; then
+    input=$(cat <&0)
+  fi
+
+  while [[ ! -z "${1}" ]]; do
+    if [[ "${1}" == "-s" ]]; then
+      separator="${2}"
+      shift 2
+      continue
+    fi
+
+    actions+=(${1})
+    shift
+  done
+
+  for action in "${actions[@]}"; do
+    case "${action}" in
+      lower)            input=${input,,} ;;
+      lower-first)      input=${input,} ;;
+      upper)            input=${input^^} ;;
+      upper-first)      input=${input^^} ;;
+
+      camel-to-sep)     input=$(sed -E "s/([a-z0-9])([A-Z])/\1${separator}\2/g" <<< "${input}") ;;
+      camel-to-spaced)  input=$(str camel-to-sep -s " " <<< "${input}") ;;
+      camel-to-dashed)  input=$(str camel-to-sep -s "-" <<< "${input}") ;;
+      camel-to-dotted)  input=$(str camel-to-sep -s "." <<< "${input}") ;;
+      camel-to-snake)   input=$(str camel-to-sep -s "_" <<< "${input}") ;;
+
+      sep-to-camel)     input=$(sed -E "s/${sep}(\w)/\u\1/g" <<< "${input}") ;;
+      spaced-to-camel)  input=$(str sep-to-camel -s " " <<< "${input}") ;;
+      dashed-to-camel)  input=$(str sep-to-camel -s "-" <<< "${input}") ;;
+      dotted-to-camel)  input=$(str sep-to-camel -s "\." <<< "${input}") ;;
+      snake-to-camel)   input=$(str sep-to-camel -s "_" <<< "${input}") ;;
+
+      *)
+        echo "\`${action}\` is not a valid action" 1>&2
+        exit 2
+      ;;
+    esac
+  done
+
+  echo "${input}"
+}
+
+str "${@}"
