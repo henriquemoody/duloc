@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Usage: {script} PATH
+# Outputs a path, but in a more user-friendly way.
+##
+
+declare IFS=$'\n'
+
+if [[ ${#} -eq 0 ]]; then
+    script-help "${0}" 1>&2
+    exit 2
+fi
+
+out-path() {
+  realpath "${1}" | sed "s,${HOME},~,"
+}
+
+out-path "${1}"
