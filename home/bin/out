@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+# Usage: {script} [OPTIONS] [STRING]...
+# Outputs a string, but replacing [content] to ANSI escape code. Use `--list` to show all the options.
+##
+
+# https://en.wikipedia.org/wiki/ANSI_escape_code#Select_Graphic_Rendition_parameters
+declare -A GRAPHIC_RENDITIONS=(
+    ['gr:bold']=1
+    ['gr:faint']=2
+    ['gr:italic']=3
+    ['gr:underline']=4
+    ['gr:invert']=7
+    ['gr:strike']=9
+    ['gr:doubly_underlined']=21
+)
+
+# https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+declare -A COLORS=(
+    # foreground
+    ['fg:black']=30
+    ['fg:red']=31
+    ['fg:green']=32
+    ['fg:yellow']=33
+    ['fg:blue']=34
+    ['fg:purple']=35
+    ['fg:cyan']=36
+    ['fg:white']=37
+    ['fg:bright_black']=90
+    ['fg:bright_red']=91
+    ['fg:bright_green']=92
+    ['fg:bright_yellow']=93
+    ['fg:bright_blue']=94
+    ['fg:bright_purple']=95
+    ['fg:bright_cyan']=96
+    ['fg:bright_white']=97
+
+    # background
+    ['bg:black']=40
+    ['bg:red']=41
+    ['bg:green']=42
+    ['bg:yellow']=43
+    ['bg:blue']=44
+    ['bg:purple']=45
+    ['bg:cyan']=46
+    ['bg:white']=47
+    ['bg:bright_black']=100
+    ['bg:bright_red']=101
+    ['bg:bright_green']=102
+    ['bg:bright_yellow']=103
+    ['bg:bright_blue']=104
+    ['bg:bright_purple']=105
+    ['bg:bright_cyan']=106
+    ['bg:bright_white']=107
+)
+
+out() {
+    local content="${@}"
+
+    for alias in "${!GRAPHIC_RENDITIONS[@]}"; do
+        content=${content//${alias}/${GRAPHIC_RENDITIONS[${alias}]}}
+    done
+
+    for alias in "${!COLORS[@]}"; do
+        content=${content//${alias}/${COLORS[${alias}]}}
+    done
+
+    content+="\033[m"
+
+    echo -e $(sed -E 's,\[([0-9;]+)?\],\\033[\1m,g' <<< "${content}")
+}
+
+declare IFS=$'\n'
+
+if [[ "${1}" == "--help" ]] || [[ "${1}" == "-h" ]]; then
+    script-help "${0}"
+    exit
+fi
+
+if [[ "${1}" == "--list" ]] || [[ "${1}" == "-l" ]]; then
+    printf "Graphic renditions\n\n"
+    for alias in "${!GRAPHIC_RENDITIONS[@]}"; do
+        code=${GRAPHIC_RENDITIONS[${alias}]}
+        printf "  %-21s Code: %-8s Sample: \033[${code}m%s\033[m\n" ${alias} ${code} $(shuf -n 1 /usr/share/dict/words)
+    done
+
+    echo
+
+    printf "Colors\n\n"
+    for alias in "${!COLORS[@]}"; do
+        code=${COLORS[${alias}]}
+        printf "  %-21s Code: %-8s Sample: \033[${code}m%s\033[m\n" ${alias} ${code} $(shuf -n 1 /usr/share/dict/words)
+    done
+    exit
+fi
+
+out "${@}"
