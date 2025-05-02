@@ -1,5 +1,29 @@
 #!/usr/bin/env bash
-sed -nE "/^# Usage/,/^##/p" "${1}" |
-  sed -E "s/^#\s?(.*)/\1/g" |
-  grep -v "^#$" |
-  sed "s/{script}/$(basename "${1}")/g"
+# Usage: {script} FILENAME
+# Generate a help information based on a Bash script's header.
+##
+
+set -euo pipefail
+
+declare -r IFS=$'\n'
+
+script-help() {
+  if [[ ${#} -lt 1 ]]; then
+    echo "You should profile a filename to head the script" 1>&2
+    exit 1
+  fi
+
+  local script="${1}"
+
+  sed -nE "/^# Usage/,/^##/p" "${script}" |
+    sed -E "s/^#\s?(.*)/\1/g" |
+    grep -v "^#$" |
+    sed "s/{script}/$(basename "${script}")/g"
+}
+
+if [[ ${#} -lt 1 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+script-help "${1}"
