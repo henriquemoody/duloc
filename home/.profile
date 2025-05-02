@@ -119,6 +119,9 @@ test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shel
 
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 
+# replacer
+export REPLACE_IGNORED_PATTERN="(.git|vendor/)"
+
 # Load "duloc" functions
 source "${HOME}/.duloc"
 

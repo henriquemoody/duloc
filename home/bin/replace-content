@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Usage: {script} SOURCE TARGET [PATH]
+# Find SOURCE in the content of files and replaces it with TARGET.
+##
+
+declare -r IFS=$'\n'
+declare -r REPLACE_IGNORED_PATTERN="${REPLACE_IGNORED_PATTERN:-"^$"}"
+
+replace-content() {
+  local source="${1}"
+  local target="${2}"
+  local path="${3:-.}"
+
+  out "[32]Replacing '[0;42]${source}[0;32]' with '[0;42]${target}[0;32]' in the [0;42]content[0;32] of files in \`$(out-path "${path}")\`"
+  while read filename; do
+    out "- Replacing content in [fg:cyan]${filename}"
+    sed -i "s,${source},${target},g" "${filename}"
+  done < <(rg "${source}" -l "${path}" | grep --extended-regexp --invert-match "${REPLACE_IGNORED_PATTERN}")
+}
+
+if [[ ${#} -lt 2 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+replace-content "${@}"

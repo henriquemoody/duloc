@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Usage: {script} SOURCE TARGET [PATH]
+# Find SOURCE in the file names and replaces it with TARGET.
+##
+
+declare -r IFS=$'\n'
+declare -r REPLACE_IGNORED_PATTERN="${REPLACE_IGNORED_PATTERN:-"^$"}"
+
+replace-filenames() {
+  local source="${1}"
+  local target="${2}"
+  local path="${3:-.}"
+
+  out "[32]Replacing '[0;42]${source}[0;32]' with '[0;42]${target}[0;32]' in [0;42]filenames[0;32] in \`$(out-path "${path}")\`"
+  find "${path}" -name "*${source}*" -type f |
+    grep --extended-regexp --invert-match "${REPLACE_IGNORED_PATTERN}" |
+    while read filename; do
+      root_dirname=$(dirname "${filename}")
+      basename=$(basename "${filename}")
+      replaced_filename="${root_dirname}/${basename//${source}/${target}}"
+      out "- Renaming file: [fg:cyan]$(pdiff "${filename}" "${replaced_filename}")"
+      rn "${filename}" "${replaced_filename}"
+    done
+}
+
+if [[ ${#} -lt 2 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+replace-filenames "${@}"

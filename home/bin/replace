@@ -4,74 +4,6 @@
 ##
 
 declare -r IFS=$'\n'
-declare -r SOURCE="${1}"
-declare -r TARGET="${2}"
-declare -r REPLACEMENT_PATH="${3:-.}"
-declare -r IGNORED_PATTERN="(.git|vendor/)"
-
-if [[ ${#} -lt 2 ]]; then
-  script-help "${0}" 1>&2
-  exit 1
-fi
-
-ttl() {
-  local source="${1}"
-  local target="${2}"
-  local path="${3}"
-  local subject="${4}"
-  out "[fg:green]Replacing '[][bg:green]${source}[][fg:green]' with '[][bg:green]${target}[][fg:green]' in the [][bg:green]${subject}[][fg:green] of files in \`$(out-path "${path}")\`"
-}
-
-rename-filename() {
-  local source="${1}"
-  local target="${2}"
-  local source_filename="${3}"
-  local target_filename="$(sed "s,${source},${target}," <<< "${source_filename}")"
-
-  git log "${source_filename}" 2> /dev/null 1>&2 &&
-    git mv "${source_filename}" "${target_filename}" ||
-    mv "${source_filename}" "${target_filename}"
-}
-
-replace-content() {
-  local source="${1}"
-  local target="${2}"
-  local path="${3:-.}"
-
-  ttl "${source}" "${target}" "${path}" "content"
-  while read filename; do
-    out "- Replacing content in [fg:cyan]${filename}"
-    sed -i "s,${source},${target},g" "${filename}"
-  done < <(rg "${source}" -l "${path}" | grep --extended-regexp --invert-match "${IGNORED_PATTERN}")
-}
-
-replace-directory-names() {
-  local source="${1}"
-  local target="${2}"
-  local directory="${3}"
-
-  ttl "${source}" "${target}" "${path}" "directory names"
-  find "${directory}" -name "*${source}*" -type d |
-    grep --extended-regexp --invert-match "${IGNORED_PATTERN}" |
-    while read filename; do
-      out "- Renaming directory [fg:cyan]${filename}"
-      rename-filename "${source}" "${target}" "${filename}"
-    done
-}
-
-replace-filenames() {
-  local source="${1}"
-  local target="${2}"
-  local directory="${3}"
-
-  ttl "${source}" "${target}" "${path}" "file names"
-  find "${directory}" -name "*${source}*" -type f |
-    grep --extended-regexp --invert-match "${IGNORED_PATTERN}" |
-    while read filename; do
-      out "- Renaming filename [fg:cyan]${filename}"
-      rename-filename "${source}" "${target}" "${filename}"
-    done
-}
 
 replace() {
   local source="${1}"
@@ -84,8 +16,13 @@ replace() {
   fi
 
   replace-content "${source}" "${target}" "${path}"
-  replace-directory-names "${source}" "${target}" "${directory}"
+  replace-dirnames "${source}" "${target}" "${directory}"
   replace-filenames "${source}" "${target}" "${directory}"
 }
 
-replace "${SOURCE}" "${TARGET}" "${REPLACEMENT_PATH}"
+if [[ ${#} -lt 2 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+replace "${@}"
