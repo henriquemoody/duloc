@@ -33,7 +33,7 @@ rename-filename() {
     mv "${source_filename}" "${target_filename}"
 }
 
-replacer-content() {
+replace-content() {
   local source="${1}"
   local target="${2}"
   local path="${3:-.}"
@@ -45,7 +45,7 @@ replacer-content() {
   done < <(rg "${source}" -l "${path}" | grep --extended-regexp --invert-match "${IGNORED_PATTERN}")
 }
 
-replacer-directory-names() {
+replace-directory-names() {
   local source="${1}"
   local target="${2}"
   local directory="${3}"
@@ -59,7 +59,7 @@ replacer-directory-names() {
     done
 }
 
-replacer-filenames() {
+replace-filenames() {
   local source="${1}"
   local target="${2}"
   local directory="${3}"
@@ -73,7 +73,7 @@ replacer-filenames() {
     done
 }
 
-replacer() {
+replace() {
   local source="${1}"
   local target="${2}"
   local path="${3:-.}"
@@ -83,9 +83,9 @@ replacer() {
     directory=$(dirname "${directory}")
   fi
 
-  replacer-content "${source}" "${target}" "${path}"
-  replacer-directory-names "${source}" "${target}" "${directory}"
-  replacer-filenames "${source}" "${target}" "${directory}"
+  replace-content "${source}" "${target}" "${path}"
+  replace-directory-names "${source}" "${target}" "${directory}"
+  replace-filenames "${source}" "${target}" "${directory}"
 }
 
-replacer "${SOURCE}" "${TARGET}" "${REPLACEMENT_PATH}"
+replace "${SOURCE}" "${TARGET}" "${REPLACEMENT_PATH}"

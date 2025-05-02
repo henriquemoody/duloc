@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+replace-all-cases() {
+  local from="${1}"
+  local to="${2}"
+  local path=${3:-.}
+
+  replace ${from} ${to} ${path}
+  replace $(str lower-first <<< ${from}) $(str lower-first <<< ${to}) ${path}
+  replace $(str camel-to-snake lower <<< ${from}) $(str camel-to-snake lower <<< ${to}) ${path}
+  replace $(str camel-to-dashed lower <<< ${from}) $(str camel-to-dashed lower <<< ${to}) ${path}
+  replace $(str camel-to-snake upper <<< ${from}) $(str camel-to-snake upper <<< ${to}) ${path}
+  replace $(str camel-to-dotted lower <<< ${from} | sed 's,\.,\\.,g') $(str camel-to-dotted lower <<< ${to}) ${path}
+  replace "$(str camel-to-spaced lower <<< ${from})" "$(str camel-to-spaced lower <<< ${to})" ${path}
+}
+
+replace-all-cases "${@}"
