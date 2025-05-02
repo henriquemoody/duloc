@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Usage: {script} OLD_PATH NEW_PATH
+# Displays the different between two paths.
+##
+
+pdiff() {
+  local old_path="${1}"
+  local new_path="${2}"
+  local diff_parts=()
+
+  IFS='/' read -ra old_parts <<< "${old_path}"
+  IFS='/' read -ra new_parts <<< "${new_path}"
+
+  for index in "${!old_parts[@]}"; do
+    old="${old_parts[index]}"
+    new="${new_parts[index]}"
+
+    if [[ "${old}" == "${new}" ]]; then
+      diff_parts+=("${old}")
+    else
+      diff_parts+=("{${old} => ${new}}")
+    fi
+  done
+
+  # Add remaining parts if new path is longer
+  for ((index=${#old_parts[@]}; index<${#new_parts[@]}; index++)); do
+    diff_parts+=("${new_parts[index]}")
+  done
+
+  IFS='/'
+  echo "${diff_parts[*]}"
+}
+
+set -euo pipefail
+
+if [[ ${#} -ne 2 ]]; then
+  script-help "${0}" 1>&2
+  exit 2
+fi
+
+pdiff "${@}"
