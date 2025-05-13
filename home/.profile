@@ -82,8 +82,8 @@ export HISTTIMEFORMAT='%F %T '
 # phpenv
 export PHPENV_ROOT="${HOME}/.phpenv"
 
-# jdk
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_361.jdk/Contents/Home/"
+# openjdk
+export JAVA_HOME="/opt/homebrew/opt/openjdk@23/libexec/openjdk.jdk/Contents/Home/"
 export PATH="${JAVA_HOME}/bin:${PATH}"
 
 # go - Use `chflags hidden go` to hide it on Finder
