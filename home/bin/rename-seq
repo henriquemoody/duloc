@@ -60,12 +60,11 @@ ls -1 |
     extension=$(echo "${old_name}" | sed -E 's/.+\.(.+)/\1/g' | tr '[A-Z]' '[a-z]')
     new_name="${PREFIX}-${number}.${extension}"
 
+    pdiff "${old_name}" "${new_name}"
     if [ -f "${new_name}" ]; then
-      echo "File ${new_name} already exists" 1>&2
-    elif [[ ${DEBUG_MODE} -eq 1 ]]; then
-      echo "${old_name} -> ${new_name}"
-    else
-      mv -v "${old_name}" "${new_name}"
+      out "[fg:red]File ${new_name} already exists" 1>&2
+    elif [[ ${DEBUG_MODE} -eq 0 ]]; then
+      mv "${old_name}" "${new_name}"
     fi
 
     let INDEX=${INDEX}+1
