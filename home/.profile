@@ -20,6 +20,7 @@ alias from-dutch='translate --from=nl --to=en --say=text'
 alias to-dutch='translate --from=en --to=nl --say=translation'
 
 alias pest="composer-bin pest"
+alias php-cs-fixer="PHP_CS_FIXER_IGNORE_ENV=1 composer-bin php-cs-fixer"
 alias phpcbf="composer-bin phpcbf"
 alias phpcs="composer-bin phpcs"
 alias phpstan="composer-bin phpstan"
