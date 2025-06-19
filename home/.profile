@@ -112,13 +112,13 @@ if [ -d "${PHPENV_ROOT}" ]; then
 fi
 
 # pyenv
-export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_ROOT="${HOME}/.pyenv"
 command -v pyenv >/dev/null || export PATH="$"PYENV_ROOT"/bin:${PATH}"
 eval "$(pyenv init -)"
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@15/bin:${PATH}"
 
 # replacer
 export REPLACE_IGNORED_PATTERN="(.git|vendor/)"
