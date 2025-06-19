@@ -46,6 +46,10 @@ export PS1="\u [\w] $ "
 export PATH="/opt/homebrew/sbin:${PATH}"
 export MANPATH="/opt/homebrew/share/man:${MANPATH}"
 
+# sdk
+export SDKMAN_DIR="${HOME}/.sdkman"
+[[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"
+
 # coreutils
 export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:${PATH}"
 export MANPATH="/opt/homebrew/opt/coreutils/libexec/gnuman:${MANPATH}"
