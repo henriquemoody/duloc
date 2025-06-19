@@ -12,12 +12,13 @@ replace-dirnames() {
   local path="${3:-.}"
 
   out "[32]Replacing '[0;42]${source}[0;32]' with '[0;42]${target}[0;32]' in [0;42]dirnames[0;32] in \`$(out-path "${path}")\`"
-  find "${path}" -name "*${source}*" -type d |
+  find "${path}" -type d |
+    grep --extended-regexp "${source}" |
     grep --extended-regexp --invert-match "${REPLACE_IGNORED_PATTERN}" |
     while read dirname; do
       root_dirname=$(dirname "${dirname}")
       basename=$(basename "${dirname}")
-      replaced_dirname="${root_dirname}/${basename//${source}/${target}}"
+      replaced_dirname="${root_dirname}/$(sed -E "s/${source}/${target}/" <<< "${basename}")"
       out "- Renaming directory: [fg:cyan]$(pdiff "${dirname}" "${replaced_dirname}")"
       rn "${dirname}" "${replaced_dirname}"
     done

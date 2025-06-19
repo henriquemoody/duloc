@@ -14,7 +14,7 @@ replace-content() {
   out "[32]Replacing '[0;42]${source}[0;32]' with '[0;42]${target}[0;32]' in the [0;42]content[0;32] of files in \`$(out-path "${path}")\`"
   while read filename; do
     out "- Replacing content in [fg:cyan]${filename}"
-    sed -i "s,${source},${target},g" "${filename}"
+    sed -E -i "s,${source},${target},g" "${filename}"
   done < <(rg "${source}" -l "${path}" | grep --extended-regexp --invert-match "${REPLACE_IGNORED_PATTERN}")
 }
 
