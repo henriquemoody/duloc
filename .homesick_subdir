@@ -1,7 +1,7 @@
+.composer
+.config
+.iterm2
 bin
 etc
 Library/Application Support
-.composer
-.iterm2
-Projects/instapro
-.config
+opt/personal
