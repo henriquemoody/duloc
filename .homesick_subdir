@@ -7,3 +7,4 @@ Library/Application Support
 opt/personal
 .continue
 Library/Application Support/nushell
+Library/Application Support/com.mitchellh.ghostty
