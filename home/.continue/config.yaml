@@ -1,0 +1,44 @@
+name: Local Config
+version: 1.0.0
+schema: v1
+models:
+  - name: gpt-oss 20b
+    provider: ollama
+    model: gpt-oss:20b
+    roles:
+      - apply
+      - chat
+      - edit
+    capabilities:
+      - tool_use
+  - name: llama3.1 8b
+    provider: ollama
+    model: llama3.1:8b
+    roles:
+      - apply
+      - autocomplete
+      - chat
+      - edit
+  - name: nomic-embed-text
+    provider: ollama
+    model: nomic-embed-text
+    roles:
+      - embed
+  - name: codegemma 7b
+    provider: ollama
+    model: codegemma:7b
+    roles:
+      - apply
+      - autocomplete
+      - chat
+      - edit
+
+context:
+  - provider: diff
+  - provider: codebase
+  - provider: url
+  - provider: folder
+  - provider: terminal
+  - provider: code
+  - provider: file
+  - provider: problems
