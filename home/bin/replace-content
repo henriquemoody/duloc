@@ -4,7 +4,7 @@
 ##
 
 declare -r IFS=$'\n'
-declare -r REPLACE_IGNORED_PATTERN="${REPLACE_IGNORED_PATTERN:-"^$"}"
+declare -r REPLACE_IGNORED_PATTERN="${REPLACE_IGNORED_PATTERN:-"^(.git|vendor)$"}"
 
 replace-content() {
   local source="${1}"
@@ -15,7 +15,7 @@ replace-content() {
   while read filename; do
     out "- Replacing content in [fg:cyan]${filename}"
     sed -E -i "s,${source},${target},g" "${filename}"
-  done < <(rg "${source}" -l "${path}" | grep --extended-regexp --invert-match "${REPLACE_IGNORED_PATTERN}")
+  done < <(rg "${source}" -l "${path}" | grep --invert-match '.git/' | grep --extended-regexp --invert-match "${REPLACE_IGNORED_PATTERN}")
 }
 
 if [[ ${#} -lt 2 ]]; then
