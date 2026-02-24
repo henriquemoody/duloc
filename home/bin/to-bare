@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+REPOSITORY=$(realpath .)
+URL=$(git remote get-url origin | sed 's,gitlab.werkspot.com,gitlab.com,; s,:instapro,:angi1/instapro/instapro,')
+
+if [[ ! -e ".git" ]]; then
+  echo "This is not a Git repository" 1>&2
+  exit 1
+fi
+
+git clone --bare "${REPOSITORY}" "${REPOSITORY}-bare"
+mv "${REPOSITORY}" "/tmp/$(basename "${REPOSITORY}")-$(date +%s)"
+mkdir "${REPOSITORY}"
+cd ..
+mv "${REPOSITORY}-bare" "${REPOSITORY}/.git"
+cd "${REPOSITORY}"
+
+set -x
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+git remote set-url origin "${URL}"
+git fetch
+git worktree add main || git worktree add master
