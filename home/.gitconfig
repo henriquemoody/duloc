@@ -1,19 +1,33 @@
 [alias]
+    ; Commit
+    c = commit
+    ca = commit --all
+    cm = commit --amend
+    cam = commit --all --amend
+    came = commit --all --amend --no-edit
+    backup = ! git add -A && git commit -m \"Backup: $(date +'%Y-%m-%d %H:%M:%S')\"
+    ; Diff
     d = diff
     ds = diff --stat
     dw = diff --color-words
+    ; Log
     l = log
     lo = log --oneline
     lp = log --patch
     lpw = log --patch --color-words
-    last = log --stat --max-count 1
     ls = log --stat
+    ; Other
+    last = show --stat
     st = status
     f = fetch
     fp = fetch --prune
     ri = rebase --interactive
     rie = rebase --interactive --keep-empty
     count-lines = "! git log --author=\"$1\" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\\n\", add, subs, loc }' #"
+    ; Worktree
+    wl = worktree list
+    wa = "! git worktree add "${1}""
+    wr = "! git worktree remove "${1}""
 [user]
     name = Henrique Moody
     email = henriquemoody@gmail.com
@@ -44,7 +58,7 @@
     coloring = highlightRecent
 [includeIf "gitdir:~/opt/personal/"]
     path = ~/opt/personal/.gitconfig
-[includeIf "gitdir:~/opt/work/"]
-    path = ~/opt/work/.gitconfig
+[includeIf "gitdir:~/opt/angi/"]
+    path = ~/opt/angi/.gitconfig
 [init]
     defaultBranch = main
