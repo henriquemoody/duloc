@@ -11,7 +11,7 @@ replace-filenames() {
   local target="${2}"
   local path="${3:-.}"
 
-  out "[32]Replacing '[0;42]${source}[0;32]' with '[0;42]${target}[0;32]' in [0;42]filenames[0;32] in \`$(out-path "${path}")\`"
+  out "<32>Replacing '<0;42>${source}<0;32>' with '<0;42>${target}<0;32>' in <0;42>filenames<0;32> in \`$(out-path "${path}")\`"
   find "${path}" -type f |
     grep --extended-regexp "${source}" |
     grep --extended-regexp --invert-match "${REPLACE_IGNORED_PATTERN}" |
@@ -19,7 +19,7 @@ replace-filenames() {
       root_dirname=$(dirname "${filename}")
       basename=$(basename "${filename}")
       replaced_filename="${root_dirname}/$(sed -E "s/${source}/${target}/" <<< "${basename}")"
-      out "- Renaming file: [fg:cyan]$(pdiff "${filename}" "${replaced_filename}")"
+      out "- Renaming file: <f:cyan>$(pdiff "${filename}" "${replaced_filename}")"
       rn "${filename}" "${replaced_filename}"
     done
 }

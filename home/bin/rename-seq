@@ -62,7 +62,7 @@ ls -1 |
 
     pdiff "${old_name}" "${new_name}"
     if [ -f "${new_name}" ]; then
-      out "[fg:red]File ${new_name} already exists" 1>&2
+      out "<f:red>File ${new_name} already exists" 1>&2
     elif [[ ${DEBUG_MODE} -eq 0 ]]; then
       mv "${old_name}" "${new_name}"
     fi

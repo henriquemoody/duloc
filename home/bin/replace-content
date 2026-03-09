@@ -11,9 +11,9 @@ replace-content() {
   local target="${2}"
   local path="${3:-.}"
 
-  out "[32]Replacing '[0;42]${source}[0;32]' with '[0;42]${target}[0;32]' in the [0;42]content[0;32] of files in \`$(out-path "${path}")\`"
+  out "<32>Replacing '<0;42>${source}<0;32>' with '<0;42>${target}<0;32>' in the <0;42>content<0;32> of files in \`$(out-path "${path}")\`"
   while read filename; do
-    out "- Replacing content in [fg:cyan]${filename}"
+    out "- Replacing content in <f:cyan>${filename}"
     sed -E -i "s,${source},${target},g" "${filename}"
   done < <(rg "${source}" -l "${path}" | grep --invert-match '.git/' | grep --extended-regexp --invert-match "${REPLACE_IGNORED_PATTERN}")
 }
