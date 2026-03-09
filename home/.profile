@@ -75,9 +75,17 @@ export PATH="${HOME}/.composer/vendor/bin:${PATH}"
 # Add ~/bin to the path - Use `chflags hidden bin` to hide it on Finder
 export PATH="${HOME}/bin:${PATH}"
 
+# Add .local/bin to the path
+export PATH="${HOME}/.local/bin:${PATH}"
+
 # Add ruby to the path
 export PATH="/opt/homebrew/opt/ruby/bin:${PATH}"
 export PATH="/opt/homebrew/lib/ruby/gems/3.0.0/bin:${PATH}"
+
+export PATH="/usr/local/opt/icu4c/bin:${PATH}"
+export PATH="/usr/local/opt/icu4c/sbin:${PATH}"
+
+export PATH="${HOMEBREW_PREFIX}/opt/make/libexec/gnubin:$PATH"
 
 # Bash history
 export HISTSIZE=10000
