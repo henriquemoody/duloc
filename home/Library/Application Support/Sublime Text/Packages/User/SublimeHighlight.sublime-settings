@@ -2,5 +2,6 @@
     "theme": "tango",
     "fontface": "Monaco",
     "full": true,
-    "linenos": true
+    "linenos": true,
+    "line_numbers": true
 }
