@@ -50,4 +50,7 @@
 
 theme = Tango Half Adapted
 font-family = Monaco
-command = /opt/homebrew/bin/nu
+command = /opt/homebrew/bin/fish
+keybind = shift+enter=text:\x1b\r
+clipboard-paste-protection = false
+clipboard-paste-bracketed-safe = true
