@@ -55,3 +55,12 @@ carapace _carapace nushell | save --force $"($nu.cache-dir)/carapace.nu"
 ## starship
 mkdir ($nu.data-dir | path join "vendor/autoload")
 starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+
+## pyenv
+$env.PYENV_ROOT = "~/.pyenv" | path expand
+if (( $"($env.PYENV_ROOT)/bin" | path type ) == "dir") {
+  $env.PATH = $env.PATH | prepend $"($env.PYENV_ROOT)/bin" }
+$env.PATH = $env.PATH | prepend $"(pyenv root)/shims"
+
+## cargo
+# source $"($nu.home-path)/.cargo/env.nu"
