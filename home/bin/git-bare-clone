@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+URL="${1:-}"
+DIRECTORY="${2:-$(basename "${URL}" .git)}"
+
+if [[ -z "${URL}" ]]; then
+  echo "Usage: git bare-clone <url> [directory]" 1>&2
+  exit 1
+fi
+
+DESTINATION=$(realpath "${DIRECTORY}")
+
+echo "Cloning into bare repository '${DESTINATION}'..."
+mkdir -p "${DESTINATION}"
+git clone --bare "${URL}" "${DESTINATION}/.git"
+cd "${DESTINATION}"
+
+echo "Setting up Git repository..."
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+git config worktree.guessRemote true
+
+for branch in main master; do
+  if git show-ref --verify --quiet "refs/remotes/origin/${branch}"; then
+    echo "Creating worktree for ${branch}..."
+    git worktree add "${branch}" "${branch}"
+  fi
+done
+
+echo "Done!"
