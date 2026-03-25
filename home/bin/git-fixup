@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# Usage: {script} PATH
+# Usage: {script} [OPTIONS] [PATH]...
 # Construct a commit message for use with rebase --autosquash.
 #
 # The commit message will be the subject line from the specified commit with a
-# prefix of "fixup! " and will contain the changes on the PATH.
+# prefix of "fixup! " and will contain the staged changes.
+#
+# Uses fzf for interactive commit selection.
 #
 #   --help, -h   Displays this help
 #
@@ -11,11 +13,6 @@
 #
 
 set -eo pipefail
-
-declare -a HASH_LIST=()
-declare -i HASH_INDEX=1
-declare -i HASH_CHOSEN=0
-declare -r PATHNAME=${1:-}
 
 help()
 {
@@ -29,13 +26,8 @@ git-log()
   local -r format=$'%h\t%s'
   local -r number_of_commits=15
 
-  git log origin/HEAD...HEAD --format="${format}" "${@}" 2> /dev/null ||
+  git log origin/HEAD..HEAD --format="${format}" "${@}" 2>/dev/null ||
     git log --max-count "${number_of_commits}" --format="${format}" "${@}"
-}
-
-git-commit()
-{
-  git commit --fixup="${HASH_LIST[HASH_CHOSEN]}" "${@}"
 }
 
 if [[ "${1:-}" = "--help" ]] || [[ "${1:-}" = "-h" ]]; then
@@ -43,34 +35,33 @@ if [[ "${1:-}" = "--help" ]] || [[ "${1:-}" = "-h" ]]; then
   exit
 fi
 
-while IFS=$'\t' read -r commit_hash subject; do
-  if [[ "${subject}" =~ "fixup!" ]]; then
-    continue
-  fi
-
-  echo "${HASH_INDEX}: ${commit_hash} -> ${subject}"
-
-  HASH_LIST[HASH_INDEX]=${commit_hash}
-  HASH_INDEX=$[HASH_INDEX + 1]
+declare input=""
+while IFS=$'\t' read -r hash subject; do
+  [[ "${subject}" =~ ^fixup! ]] && continue
+  input+="${hash}"$'\t'"$(out "<f:yellow>${hash}</> ${subject}")"$'\n'
 done < <(git-log "${@}" | tac)
 
-echo
-if [[ ${#HASH_LIST[@]} -eq 1 ]]; then
-  HASH_CHOSEN=1
-  echo "Picking commit ${HASH_LIST[1]}, since it's the only one available."
-else
-  while [[ ${HASH_CHOSEN} -eq 0 ]]; do
-    echo -n "> Which commit would you like to fixup? "
-    read user_input
-
-    if [[ ! -v "HASH_LIST[user_input]" ]]; then
-      echo "'${user_input}' is not a valid option." 1>&2
-      continue
-    fi
-
-    HASH_CHOSEN=${user_input}
-  done
+if [[ -z "${input}" ]]; then
+  out "<f:red>No commits available to fixup.</>" >&2
+  exit 1
 fi
 
+declare selected=""
+selected=$(printf '%s' "${input}" | \
+  fzf --ansi \
+      --delimiter=$'\t' \
+      --with-nth=2 \
+      --prompt="$(out '<f:cyan>fixup</> ▶ ') " \
+      --header="$(out '<g:bold>Select a commit to fixup</>')" \
+      --preview='git show --stat --color {1}' \
+      --preview-window='right:55%') || true
+
+if [[ -z "${selected}" ]]; then
+  out "<f:yellow>No commit selected, aborting.</>" >&2
+  exit 1
+fi
+
+declare -r commit_hash=$(cut -f1 <<< "${selected}")
+
 echo
-git-commit "${@}"
+git commit --fixup="${commit_hash}" "${@}"
