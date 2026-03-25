@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+REPOSITORY=$(realpath .)
+URL=$(git remote get-url origin)
+
+if [[ ! -e ".git" ]]; then
+  echo "This is not a Git repository" 1>&2
+  exit 1
+fi
+
+cat <<EOF
+This script will convert "${REPOSITORY}" into a bare Git repository:
+
+  1. Clone the current repository as a bare repo
+  2. Move the original to /tmp for backup
+  3. Reconfigure the remote URL to: ${URL}
+  4. Fetch all remote branches
+  5. Remove branches that only exist on the remote
+  6. Add worktrees for main/master
+
+EOF
+read -r -p "Continue? [y/N] " CONFIRM
+if [[ "${CONFIRM}" != "y" && "${CONFIRM}" != "Y" ]]; then
+  echo "Aborted." 1>&2
+  exit 1
+fi
+
+LOCAL_BRANCHES=$(git branch --format='%(refname:short)')
+
+git clone --bare "${REPOSITORY}" "${REPOSITORY}-bare"
+mv "${REPOSITORY}" "/tmp/$(basename "${REPOSITORY}")-$(date +%s)"
+mkdir "${REPOSITORY}"
+cd ..
+mv "${REPOSITORY}-bare" "${REPOSITORY}/.git"
+cd "${REPOSITORY}"
+
+echo "Setting up Git repository..."
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+git config worktree.guessRemote true
+git remote set-url origin "${URL}"
+
+echo "Fetching remote branches..."
+git fetch
+
+echo "Removing remote-only branches..."
+while IFS= read -r branch; do
+  if ! grep -qx "${branch}" <<< "${LOCAL_BRANCHES}"; then
+    git branch -D "${branch}"
+  fi
+done < <(git branch --format='%(refname:short)')
+
+echo "Creating worktrees..."
+for branch in main master; do
+  if git show-ref --verify --quiet "refs/remotes/origin/${branch}"; then
+    git worktree add "${branch}" "${branch}"
+  fi
+done
+
+echo "Done!"
