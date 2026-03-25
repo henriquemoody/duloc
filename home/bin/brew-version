@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Usage: {script} FORMULA TARGET_VERSION
+# Usage: {script} FORMULA [ TARGET_VERSION ]
 # Symlink a brew formula to a specific version.
 ##
 
-if [[ ${#} -eq 0 ]] || [[ ${#} -ne 2 ]]; then
+if [[ ${#} -eq 0 ]]; then
   script-help "${0}" 1>&2
   exit 1
 fi
@@ -19,7 +19,12 @@ declare -r IFS=$'\n'
 declare -r FORMULA=${1}
 declare -r BINARY=$(which "${FORMULA}")
 declare -r CURRENT_VERSION=$(realpath "${BINARY}" | sed -E 's,/opt/homebrew/Cellar/,,; s,/.*,,; s,^.+@,,')
-declare -r TARGET_VERSION=${2}
+declare -r TARGET_VERSION=${2:-}
+
+if [[ ${#} -eq 1 ]]; then
+  echo "${CURRENT_VERSION}"
+  exit
+fi
 
 if [[ ${CURRENT_VERSION} = ${TARGET_VERSION} ]]; then
   echo "${TARGET_VERSION} is already the current version of ${FORMULA}"
