@@ -42,7 +42,7 @@ while IFS=$'\t' read -r hash subject; do
 done < <(git-log "${@}" | tac)
 
 if [[ -z "${input}" ]]; then
-  out "<f:red>No commits available to fixup.</>" >&2
+  err "<f:red>No commits available to fixup.</>"
   exit 1
 fi
 
@@ -57,7 +57,7 @@ selected=$(printf '%s' "${input}" | \
       --preview-window='right:55%') || true
 
 if [[ -z "${selected}" ]]; then
-  out "<f:yellow>No commit selected, aborting.</>" >&2
+  err "<f:yellow>No commit selected, aborting.</>"
   exit 1
 fi
 
