@@ -13,7 +13,7 @@ set -euo pipefail
 
 declare -r IFS=$'\n'
 
-if [[ ${#} -ne 1 ]]; then
+if [[ ${#} -lt 1 ]] || [[ ${#} -gt 3 ]]; then
   script-help "${0}" 1>&2
   exit 1
 fi
@@ -33,4 +33,4 @@ if [ -z ${PULL_REQUEST_ID} ]; then
 fi
 
 git fetch "${NAME}" "pull/${PULL_REQUEST_ID}/head:${BRANCH}"
-git checkout "${BRANCH}"
+git worktree add "pr-${PULL_REQUEST_ID}" "${BRANCH}"
