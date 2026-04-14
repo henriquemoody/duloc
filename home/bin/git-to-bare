@@ -52,9 +52,10 @@ while IFS= read -r branch; do
 done < <(git branch --format='%(refname:short)')
 
 echo "Creating worktrees..."
-for branch in main master; do
+for branch in $(git remote show origin | sed -n '/HEAD branch/s/.*: //p') main master; do
   if git show-ref --verify --quiet "refs/remotes/origin/${branch}"; then
     git worktree add "${branch}" "${branch}"
+    break
   fi
 done
 
