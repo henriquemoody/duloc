@@ -32,3 +32,4 @@ PlaygroundCommand.php
 .claude/settings.local.json
 .phpunit.result.cache
 composer.lock
+opencode.json
