@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-replace-all-cases() {
+replace-code-cases() {
   local from="${1}"
   local to="${2}"
   local path=${3:-.}
@@ -13,4 +13,4 @@ replace-all-cases() {
   replace $(str camel-to-dotted lower <<< ${from} | sed 's,\.,\\.,g') $(str camel-to-dotted lower <<< ${to}) ${path}
 }
 
-replace-all-cases "${@}"
+replace-code-cases "${@}"
