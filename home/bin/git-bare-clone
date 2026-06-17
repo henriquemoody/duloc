@@ -21,11 +21,17 @@ echo "Setting up Git repository..."
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 git config worktree.guessRemote true
 
-for branch in main master; do
-  if git show-ref --verify --quiet "refs/remotes/origin/${branch}"; then
-    echo "Creating worktree for ${branch}..."
-    git worktree add "${branch}" "${branch}"
-  fi
-done
+DEFAULT_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || true)
+if [[ -z "${DEFAULT_BRANCH}" ]]; then
+  DEFAULT_BRANCH=$(git ls-remote --symref origin HEAD | awk '/^ref:/ {sub("refs/heads/", "", $2); print $2; exit}')
+fi
+
+if [[ -z "${DEFAULT_BRANCH}" ]]; then
+  echo "Could not determine the default branch." 1>&2
+  exit 1
+fi
+
+echo "Creating worktree for ${DEFAULT_BRANCH}..."
+git worktree add "${DEFAULT_BRANCH}" "${DEFAULT_BRANCH}"
 
 echo "Done!"
