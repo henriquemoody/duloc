@@ -7,6 +7,7 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "project_panel": {"dock": "left"},
   "show_wrap_guides": true,
   "wrap_guides": [72, 80, 116, 120],
   "context_servers": {
@@ -36,6 +37,7 @@
   },
   "base_keymap": "SublimeText",
   "agent": {
+    "dock": "right",
     "always_allow_tool_actions": true,
     "default_model": {
       "provider": "ollama",
