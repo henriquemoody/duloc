@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Usage: {script} SOURCE_FILENAME TARGET_FILENAME
+# Rename a file using Git when possible.
+##
+
+set -euo pipefail
+
+declare -r IFS=$'\n'
+
+if [[ ${#} -ne 2 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+rn() {
+  local source="${1}"
+  local target="${2}"
+
+  git log "${source}" 2> /dev/null 1>&2 &&
+    git mv "${source}" "${target}" ||
+    mv "${source}" "${target}"
+}
+
+if [[ ${#} -ne 2 ]]; then
+  script-help "${0}" 1>&2
+  exit 1
+fi
+
+rn "${@}"
