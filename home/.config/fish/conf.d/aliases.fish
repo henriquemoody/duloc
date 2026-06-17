@@ -4,6 +4,7 @@ alias to-dutch 'translate --from=en --to=nl --say=translation'
 
 # PHP / Composer
 alias pest 'composer-bin pest'
+alias php-cs-fixer 'composer-bin php-cs-fixer'
 alias phpcbf 'composer-bin phpcbf'
 alias phpcs 'composer-bin phpcs'
 alias phpstan 'composer-bin phpstan'
