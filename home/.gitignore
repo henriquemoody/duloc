@@ -28,6 +28,7 @@ oh-my-openagent.json-*
 .sisyphus/
 .vscode/
 .zed/
+*.mdb
 __pycache__
 auth.json
 CLAUDE.md
