@@ -8,3 +8,4 @@ opt/personal
 .continue
 Library/Application Support/nushell
 Library/Application Support/com.mitchellh.ghostty
+.config/opencode
