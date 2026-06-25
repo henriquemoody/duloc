@@ -1,4 +1,6 @@
 !.github/workflows
+.codegraph
+oh-my-openagent.json-*
 *.bak
 *.i
 *.i.*
