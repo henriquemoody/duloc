@@ -2,63 +2,63 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
     "hephaestus": {
-      "model": "ollama-cloud/glm-5.2"
+      "model": "ollama-cloud/glm-5.3"
     },
     "oracle": {
-      "model": "ollama-cloud/deepseek-v3.2"
+      "model": "ollama-cloud/deepseek-v4-pro"
     },
     "librarian": {
-      "model": "ollama-cloud/qwen3.5"
+      "model": "ollama-cloud/deepseek-v4-flash"
     },
     "explore": {
-      "model": "ollama-cloud/qwen3.5"
+      "model": "ollama-cloud/deepseek-v4-flash"
     },
     "multimodal-looker": {
-      "model": "ollama-cloud/gemma4:31b"
+      "model": "ollama-cloud/kimi-k3"
     },
     "prometheus": {
-      "model": "ollama-cloud/glm-5.2"
+      "model": "ollama-cloud/glm-5.3"
     },
     "metis": {
-      "model": "ollama-cloud/deepseek-v3.2"
+      "model": "ollama-cloud/kimi-k3"
     },
     "momus": {
-      "model": "ollama-cloud/devstral-2:123b"
+      "model": "ollama-cloud/glm-5.3"
     },
     "atlas": {
-      "model": "ollama-cloud/glm-5.2"
+      "model": "ollama-cloud/glm-5.3"
     },
     "sisyphus-junior": {
-      "model": "ollama-cloud/qwen3.5"
+      "model": "ollama-cloud/kimi-k3"
     },
     "sisyphus": {
-      "model": "ollama-cloud/glm-5.2"
+      "model": "ollama-cloud/glm-5.3"
     }
   },
   "categories": {
     "visual-engineering": {
-      "model": "ollama-cloud/gemma4:31b"
+      "model": "ollama-cloud/kimi-k3"
     },
     "ultrabrain": {
-      "model": "ollama-cloud/deepseek-v3.2"
+      "model": "ollama-cloud/deepseek-v4-pro"
     },
     "deep": {
       "model": "ollama-cloud/kimi-k2.7-code"
     },
     "artistry": {
-      "model": "ollama-cloud/glm-5.2"
+      "model": "ollama-cloud/kimi-k3"
     },
     "quick": {
-      "model": "ollama-cloud/qwen3.5"
+      "model": "ollama-cloud/deepseek-v4-flash"
     },
     "unspecified-low": {
-      "model": "ollama-cloud/qwen3.5"
+      "model": "ollama-cloud/deepseek-v4-flash"
     },
     "unspecified-high": {
-      "model": "ollama-cloud/deepseek-v3.2"
+      "model": "ollama-cloud/glm-5.3"
     },
     "writing": {
-      "model": "ollama-cloud/glm-5.2"
+      "model": "ollama-cloud/kimi-k3"
     }
   }
 }
