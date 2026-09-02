@@ -31,7 +31,6 @@ oh-my-openagent.json-*
 *.mdb
 __pycache__
 auth.json
-CLAUDE.md
 composer.lock
 copilot-instructions.md
 CURSOR.md
