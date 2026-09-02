@@ -33,5 +33,7 @@ fi
 
 echo "Creating worktree for ${DEFAULT_BRANCH}..."
 git worktree add "${DEFAULT_BRANCH}" "${DEFAULT_BRANCH}"
+cd "${DEFAULT_BRANCH}"
+git branch --set-upstream-to="origin/${DEFAULT_BRANCH}" "${DEFAULT_BRANCH}"
 
 echo "Done!"
