@@ -1,85 +1,64 @@
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
-  "model_fallback": true,
-  "runtime_fallback": true,
   "agents": {
     "hephaestus": {
-      "model": "opencode-go/glm-5.3",
-      "fallback_models": "ollama-cloud/glm-5.3"
+      "model": "ollama-cloud/glm-5.3"
     },
     "oracle": {
-      "model": "opencode-go/deepseek-v4-pro",
-      "fallback_models": "ollama-cloud/deepseek-v4-pro"
+      "model": "ollama-cloud/deepseek-v4-pro"
     },
     "librarian": {
-      "model": "opencode-go/deepseek-v4-flash",
-      "fallback_models": "ollama-cloud/deepseek-v4-flash"
+      "model": "ollama-cloud/deepseek-v4-flash"
     },
     "explore": {
-      "model": "opencode-go/deepseek-v4-flash",
-      "fallback_models": "ollama-cloud/deepseek-v4-flash"
+      "model": "ollama-cloud/deepseek-v4-flash"
     },
     "multimodal-looker": {
-      "model": "opencode-go/kimi-k3",
-      "fallback_models": "ollama-cloud/kimi-k3"
+      "model": "ollama-cloud/kimi-k3"
     },
     "prometheus": {
-      "model": "opencode-go/glm-5.3",
-      "fallback_models": "ollama-cloud/glm-5.3"
+      "model": "ollama-cloud/glm-5.3"
     },
     "metis": {
-      "model": "opencode-go/kimi-k3",
-      "fallback_models": "ollama-cloud/kimi-k3"
+      "model": "ollama-cloud/kimi-k3"
     },
     "momus": {
-      "model": "opencode-go/glm-5.3",
-      "fallback_models": "ollama-cloud/glm-5.3"
+      "model": "ollama-cloud/glm-5.3"
     },
     "atlas": {
-      "model": "opencode-go/glm-5.3",
-      "fallback_models": "ollama-cloud/glm-5.3"
+      "model": "ollama-cloud/glm-5.3"
     },
     "sisyphus-junior": {
-      "model": "opencode-go/kimi-k3",
-      "fallback_models": "ollama-cloud/kimi-k3"
+      "model": "ollama-cloud/kimi-k3"
     },
     "sisyphus": {
-      "model": "opencode-go/glm-5.3",
-      "fallback_models": "ollama-cloud/glm-5.3"
+      "model": "ollama-cloud/glm-5.3"
     }
   },
   "categories": {
     "visual-engineering": {
-      "model": "opencode-go/kimi-k3",
-      "fallback_models": "ollama-cloud/kimi-k3"
+      "model": "ollama-cloud/kimi-k3"
     },
     "ultrabrain": {
-      "model": "opencode-go/deepseek-v4-pro",
-      "fallback_models": "ollama-cloud/deepseek-v4-pro"
+      "model": "ollama-cloud/deepseek-v4-pro"
     },
     "deep": {
-      "model": "opencode-go/kimi-k2.7-code",
-      "fallback_models": "ollama-cloud/kimi-k2.7-code"
+      "model": "ollama-cloud/kimi-k2.7-code"
     },
     "artistry": {
-      "model": "opencode-go/kimi-k3",
-      "fallback_models": "ollama-cloud/kimi-k3"
+      "model": "ollama-cloud/kimi-k3"
     },
     "quick": {
-      "model": "opencode-go/deepseek-v4-flash",
-      "fallback_models": "ollama-cloud/deepseek-v4-flash"
+      "model": "ollama-cloud/deepseek-v4-flash"
     },
     "unspecified-low": {
-      "model": "opencode-go/deepseek-v4-flash",
-      "fallback_models": "ollama-cloud/deepseek-v4-flash"
+      "model": "ollama-cloud/deepseek-v4-flash"
     },
     "unspecified-high": {
-      "model": "opencode-go/glm-5.3",
-      "fallback_models": "ollama-cloud/glm-5.3"
+      "model": "ollama-cloud/glm-5.3"
     },
     "writing": {
-      "model": "opencode-go/kimi-k3",
-      "fallback_models": "ollama-cloud/kimi-k3"
+      "model": "ollama-cloud/kimi-k3"
     }
   }
 }
