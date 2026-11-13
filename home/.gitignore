@@ -18,7 +18,11 @@ oh-my-openagent.json-*
 .gemini/
 .idea/
 .obsidian/
+# ignore .omo runtime dirs everywhere, but track the top-level OMO config file
 .omo/
+!/.omo/
+/.omo/*
+!/.omo/omo.jsonc
 .opencode/
 .phpactor.json
 .phpintel

@@ -1,0 +1,39 @@
+// OMO configuration — open models via ollama-cloud
+// Managed by duloc dotfiles; symlinked from ~/.omo/omo.jsonc
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json",
+  "_migrations": [
+    "2026-07-opencode-config-unification",
+    "2026-08-reasoning-unification"
+  ],
+  "[opencode]": {
+    "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json",
+    "agents": {
+      // deep reasoning
+      "oracle": { "model": "ollama-cloud/deepseek-v4-pro" },
+      // Claude-like orchestration roles
+      "hephaestus": { "model": "ollama-cloud/glm-5.3" },
+      "prometheus": { "model": "ollama-cloud/glm-5.3" },
+      "momus": { "model": "ollama-cloud/glm-5.3" },
+      "atlas": { "model": "ollama-cloud/glm-5.3" },
+      // Kimi-shaped advisory / creative roles
+      "metis": { "model": "ollama-cloud/kimi-k3" },
+      "multimodal-looker": { "model": "ollama-cloud/kimi-k3" },
+      "sisyphus-junior": { "model": "ollama-cloud/kimi-k3" },
+      // fast search
+      "explore": { "model": "ollama-cloud/deepseek-v4.1-flash" },
+      "librarian": { "model": "ollama-cloud/deepseek-v4.1-flash" }
+    },
+    "categories": {
+      "ultrabrain": { "model": "ollama-cloud/deepseek-v4-pro" },
+      "deep-low": { "model": "ollama-cloud/kimi-k2.7-code" },
+      "deep-high": { "model": "ollama-cloud/deepseek-v4-pro" },
+      "visual-engineering": { "model": "ollama-cloud/kimi-k3" },
+      "artistry": { "model": "ollama-cloud/kimi-k3" },
+      "writing": { "model": "ollama-cloud/kimi-k3" },
+      "quick": { "model": "ollama-cloud/deepseek-v4.1-flash" },
+      "unspecified-low": { "model": "ollama-cloud/deepseek-v4.1-flash" },
+      "unspecified-high": { "model": "ollama-cloud/glm-5.3" }
+    }
+  }
+}
